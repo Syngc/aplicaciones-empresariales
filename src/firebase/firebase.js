@@ -1,6 +1,5 @@
 import firebase from 'firebase/app';
 import 'firebase/auth';
-console.log(process.env.REACT_APP_INTEGRADOR_MESSAGING)
 const prodConfig = {
   apiKey: process.env.REACT_INTEGRADOR_API_KEY,
   authDomain: process.env.REACT_INTEGRADOR_AUTH_DOMAIN,
