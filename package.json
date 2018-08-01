@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "express": "^4.16.3",
     "firebase": "^5.3.0",
     "react": "^16.4.1",
     "react-dom": "^16.4.1",
@@ -10,6 +11,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
+    "start-prod": "react-scripts build && node app.js",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
