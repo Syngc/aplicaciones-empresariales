@@ -26,3 +26,15 @@
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
+
+.repoImage {
+  float: right;
+  padding-right: 2%;
+  padding-top: 5%;
+}
+.repo {
+  border-top: solid 1px;
+}
+.repoImage a{
+  color: inherit;
+}

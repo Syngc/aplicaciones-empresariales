@@ -2,9 +2,19 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import { firebase } from './firebase';
+import { GithubLoginButton } from "react-social-login-buttons";
+import { GoMarkGithub } from 'react-icons/go';
 
 class App extends Component {
+  constructor(props){
+    super(props)
+    this.state = {
+      user : {},
+      repos: []
+    }
+  }
   execute(e) {
+    let that = this
     let fire = firebase.firebase
     var provider = new fire.auth.GithubAuthProvider();
     provider.addScope('repo');
@@ -14,6 +24,18 @@ class App extends Component {
       // The signed-in user info.
       var user = result.user;
       // ...
+      that.setState({
+        user: result
+      }, ()=>{
+        fetch(that.state.user.additionalUserInfo.profile.repos_url).then((res)=>{
+          return(res.json())
+        }).then((res)=>{
+          that.setState({
+            repos: res
+          })
+        })
+      })
+
     }).catch(function(error) {
       // Handle Errors here.
       var errorCode = error.code;
@@ -25,19 +47,53 @@ class App extends Component {
       // ...
     });
   }
+  beforeLogin(){
+    if(Object.keys(this.state.user).length === 0 && this.state.user.constructor === Object){
+      return <GithubLoginButton onClick={(e) => this.execute(e)} />
+    } else {
+      return <button onClick={(e) => this.getRepositories(e)}>
+        algo
+      </button>
+    }
+  }
+  renderRepositories(){
+    if(this.state.repos.length === 0){
+      return null
+    } else {
+      let component = []
+      for(let i = 0; i < this.state.repos.length; i ++){
+        let comp = <li className="repo" key={i}>
+          <div style={{float: "left" , textAlign:"left"}}>
+            <h2>{this.state.repos[i].name}</h2>
+            <p >{this.state.repos[i].description}</p>
+          </div>
+          <div tyle={{float: "right"}} className="repoImage">
+            <a href={this.state.repos[i].html_url}>
+              <GoMarkGithub size="3em"/>
+            </a>
+          </div>
+        </li>
+        component.push(comp)
+        if(i === this.state.repos.length - 1){
+          return component
+        }
+      }
+    }
+  }
   render() {
     return (
       <div className="App">
         <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
         </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-          <button onClick={(e) => this.execute(e)}>
-            hola
-          </button>
-        </p>
+        {
+          this.beforeLogin()
+        }
+        <ul style={{listStyle: "none", display: "flex", flexDirection:"column"}}>
+          {
+            this.renderRepositories()
+          }
+        </ul>
       </div>
     );
   }
