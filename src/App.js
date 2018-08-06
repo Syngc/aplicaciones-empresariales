@@ -12,11 +12,10 @@ class App extends Component {
       user : {},
       repos: []
     }
-    console.log (process.env.REACT_APP_INTEGRADOR_API_KEY)
   }
   execute(e) {
     let that = this
-    let fire = firebase.firebase
+    let fire = firebase.fire.firebase_
     var provider = new fire.auth.GithubAuthProvider();
     provider.addScope('repo');
     fire.auth().signInWithPopup(provider).then(function(result) {

@@ -1,13 +1,14 @@
 import firebase from 'firebase/app';
-import 'firebase/auth';
+import 'firebase/app'
+import 'firebase/auth'
 
 const prodConfig = {
-  apiKey: process.env.REACT_INTEGRADOR_API_KEY,
-  authDomain: process.env.REACT_INTEGRADOR_AUTH_DOMAIN,
-  databaseURL: process.env.REACT_INTEGRADOR_DATABASE,
-  projectId: process.env.REACT_INTEGRADOR_PROJECT_ID,
-  storageBucket: process.env.REACT_INTEGRADOR_STORAGE,
-  messagingSenderId: process.env.REACT_INTEGRADOR_MESSAGING
+  apiKey: process.env.REACT_APP_INTEGRADOR_API_KEY,
+  authDomain: process.env.REACT_APP_INTEGRADOR_AUTH_DOMAIN,
+  databaseURL: process.env.REACT_APP_INTEGRADOR_DATABASE,
+  projectId: process.env.REACT_APP_INTEGRADOR_PROJECT_ID,
+  storageBucket: process.env.REACT_APP_INTEGRADOR_STORAGE,
+  messagingSenderId: process.env.REACT_APP_INTEGRADOR_MESSAGING
 };
 
 const devConfig = {
@@ -18,16 +19,15 @@ const devConfig = {
   storageBucket: process.env.REACT_APP_INTEGRADOR_STORAGE,
   messagingSenderId: process.env.REACT_APP_INTEGRADOR_MESSAGING
 };
-console.log(devConfig)
-console.log( process.env.REACT_APP_INTEGRADOR_API_KEY)
 const config = process.env.NODE_ENV === 'production'
   ? prodConfig
   : devConfig;
 
+let fire = null
 if (!firebase.apps.length) {
-  firebase.initializeApp(config);
+  fire = firebase.initializeApp(config);
 }
 
 export {
-  firebase,
+  fire,
 };
