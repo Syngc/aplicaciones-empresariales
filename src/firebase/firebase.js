@@ -1,5 +1,6 @@
 import firebase from 'firebase/app';
 import 'firebase/auth';
+
 const prodConfig = {
   apiKey: process.env.REACT_INTEGRADOR_API_KEY,
   authDomain: process.env.REACT_INTEGRADOR_AUTH_DOMAIN,
@@ -17,7 +18,8 @@ const devConfig = {
   storageBucket: process.env.REACT_APP_INTEGRADOR_STORAGE,
   messagingSenderId: process.env.REACT_APP_INTEGRADOR_MESSAGING
 };
-
+console.log(devConfig)
+console.log( process.env.REACT_APP_INTEGRADOR_API_KEY)
 const config = process.env.NODE_ENV === 'production'
   ? prodConfig
   : devConfig;

@@ -12,6 +12,7 @@ class App extends Component {
       user : {},
       repos: []
     }
+    console.log (process.env.REACT_APP_INTEGRADOR_API_KEY)
   }
   execute(e) {
     let that = this
