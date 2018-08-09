@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
+import Login from './views/login/login'
 import { firebase } from './firebase';
 import { GithubLoginButton } from "react-social-login-buttons";
 import { GoMarkGithub } from 'react-icons/go';
@@ -13,6 +14,7 @@ class App extends Component {
       repos: []
     }
   }
+
   execute(e) {
     let that = this
     let fire = firebase.fire.firebase_
@@ -49,7 +51,10 @@ class App extends Component {
   }
   beforeLogin(){
     if(Object.keys(this.state.user).length === 0 && this.state.user.constructor === Object){
-      return <GithubLoginButton onClick={(e) => this.execute(e)} />
+      return( 
+      <div>
+          <Login execute={this.execute}/> 
+      </div>)
     } else {
       return <button onClick={(e) => this.getRepositories(e)}>
         algo
@@ -84,7 +89,6 @@ class App extends Component {
     return (
       <div className="App">
         <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
         </header>
         {
           this.beforeLogin()
