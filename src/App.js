@@ -13,6 +13,8 @@ class App extends Component {
       user : {},
       repos: []
     }
+    this.execute = this.execute.bind(this)
+    this.renderRepositories = this.renderRepositories.bind(this)
   }
 
   execute(e) {
@@ -28,12 +30,14 @@ class App extends Component {
       // ...
       that.setState({
         user: result
-      }, ()=>{
+      }, () => {
         fetch(that.state.user.additionalUserInfo.profile.repos_url).then((res)=>{
           return(res.json())
         }).then((res)=>{
           that.setState({
             repos: res
+          }, () => {
+
           })
         })
       })
@@ -51,39 +55,37 @@ class App extends Component {
   }
   beforeLogin(){
     if(Object.keys(this.state.user).length === 0 && this.state.user.constructor === Object){
-      return( 
+      return(
       <div>
-          <Login execute={this.execute}/> 
+          <Login execute={this.execute}/>
       </div>)
-    } else {
-      return <button onClick={(e) => this.getRepositories(e)}>
-        algo
-      </button>
+    } else  {
+      return null
     }
   }
   renderRepositories(){
-    if(this.state.repos.length === 0){
-      return null
-    } else {
-      let component = []
-      for(let i = 0; i < this.state.repos.length; i ++){
-        let comp = <li className="repo" key={i}>
-          <div style={{float: "left" , textAlign:"left"}}>
-            <h2>{this.state.repos[i].name}</h2>
-            <p >{this.state.repos[i].description}</p>
-          </div>
-          <div tyle={{float: "right"}} className="repoImage">
-            <a href={this.state.repos[i].html_url}>
-              <GoMarkGithub size="3em"/>
-            </a>
-          </div>
-        </li>
-        component.push(comp)
-        if(i === this.state.repos.length - 1){
-          return component
+        if(this.state.repos.length === 0){
+          return null
+        } else {
+          let component = []
+          for(let i = 0; i < this.state.repos.length; i ++){
+            let comp = <li className="repo" key={i}>
+              <div style={{float: "left" , textAlign:"left"}}>
+                <h2>{this.state.repos[i].name}</h2>
+                <p >{this.state.repos[i].description}</p>
+              </div>
+              <div tyle={{float: "right"}} className="repoImage">
+                <a href={this.state.repos[i].html_url}>
+                  <GoMarkGithub size="3em"/>
+                </a>
+              </div>
+            </li>
+            component.push(comp)
+            if(i === this.state.repos.length - 1){
+              return component
+            }
+          }
         }
-      }
-    }
   }
   render() {
     return (
