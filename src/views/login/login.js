@@ -1,7 +1,6 @@
-import React from 'react';
+import React from 'react'
 import './login.css'
-import { GithubLoginButton } from "react-social-login-buttons";
-import { firebase } from '../../firebase';
+import { GithubLoginButton } from "react-social-login-buttons"
 
 
 class Login extends React.Component {
