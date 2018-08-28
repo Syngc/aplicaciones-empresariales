@@ -19,30 +19,32 @@ class App extends Component {
   async execute(e) {
     let that = this
     let user = await cloud.login()
+    localStorage.setItem('user', JSON.stringify(user))
     //TODO: Catch the error message if exists
-    that.setState({
-      user: user
-    }, () => {
-      fetch(that.state.user.additionalUserInfo.profile.repos_url).then((res)=>{
+    fetch(user.additionalUserInfo.profile.repos_url).then((res)=>{
+      return(res.json())
+    }).then((res)=>{
+      that.setState({
+      repos: res
+      })
+    })
+  }
+  beforeLogin(){
+    let user = JSON.parse(localStorage.getItem('user'))
+    let that = this
+    if(!user){
+      return(
+      <div>
+          <Login execute={this.execute}/>
+      </div>)
+    } else  {
+      fetch(user.additionalUserInfo.profile.repos_url).then((res)=>{
         return(res.json())
       }).then((res)=>{
         that.setState({
         repos: res
         })
       })
-    })
-  }
-  prueba(){
-    cloud.prueba()
-  
-  }
-  beforeLogin(){
-    if(Object.keys(this.state.user).length === 0 && this.state.user.constructor === Object){
-      return(
-      <div>
-          <Login execute={this.execute}/>
-      </div>)
-    } else  {
       return null
     }
   }
