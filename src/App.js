@@ -29,22 +29,29 @@ class App extends Component {
       })
     })
   }
-  beforeLogin(){
+  componentDidMount(){
     let user = JSON.parse(localStorage.getItem('user'))
     let that = this
-    if(!user){
-      return(
-      <div>
-          <Login execute={this.execute}/>
-      </div>)
-    } else  {
-      fetch(user.additionalUserInfo.profile.repos_url).then((res)=>{
+    if(user){
+      that.setState({
+        user: user
+      })
+      fetch(user.additionalUserInfo.profile.repos_url+'?access_token='+user.credential.accessToken).then((res)=>{
         return(res.json())
       }).then((res)=>{
         that.setState({
         repos: res
         })
       })
+    }
+  }
+  beforeLogin(){
+    if(Object.keys(this.state.user).length === 0 && this.state.user.constructor === Object){
+      return(
+      <div>
+          <Login execute={this.execute}/>
+      </div>)
+    } else  {
       return null
     }
   }
