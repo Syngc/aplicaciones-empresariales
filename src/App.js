@@ -1,107 +1,139 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
-import Login from './views/login/login'
-import { firebase } from './firebase';
+import React, { Component } from "react";
+import logo from "./logo.svg";
+import "./App.css";
+import Login from "./views/login/login";
+import Signup from "./views/signup/signup";
+import { firebase } from "./firebase";
 import { GithubLoginButton } from "react-social-login-buttons";
-import { GoMarkGithub } from 'react-icons/go';
+import { GoMarkGithub } from "react-icons/go";
 
 class App extends Component {
-  constructor(props){
-    super(props)
+  constructor(props) {
+    super(props);
     this.state = {
-      user : {},
+      user: {},
       repos: []
-    }
-    this.execute = this.execute.bind(this)
-    this.renderRepositories = this.renderRepositories.bind(this)
+    };
+    this.execute = this.execute.bind(this);
+    this.renderRepositories = this.renderRepositories.bind(this);
   }
 
   execute(e) {
-    let that = this
-    let fire = firebase.fire.firebase_
+    let that = this;
+    let fire = firebase.fire.firebase_;
     var provider = new fire.auth.GithubAuthProvider();
-    provider.addScope('repo');
-    fire.auth().signInWithPopup(provider).then(function(result) {
-      // This gives you a GitHub Access Token. You can use it to access the GitHub API.
-      var token = result.credential.accessToken;
-      // The signed-in user info.
-      var user = result.user;
-      // ...
-      that.setState({
-        user: result
-      }, () => {
-        fetch(that.state.user.additionalUserInfo.profile.repos_url).then((res)=>{
-          return(res.json())
-        }).then((res)=>{
-          that.setState({
-            repos: res
-          }, () => {
-
-          })
-        })
+    provider.addScope("repo");
+    fire
+      .auth()
+      .signInWithPopup(provider)
+      .then(function(result) {
+        // This gives you a GitHub Access Token. You can use it to access the GitHub API.
+        var token = result.credential.accessToken;
+        // The signed-in user info.
+        var user = result.user;
+        // ...
+        that.setState(
+          {
+            user: result
+          },
+          () => {
+            fetch(that.state.user.additionalUserInfo.profile.repos_url)
+              .then(res => {
+                return res.json();
+              })
+              .then(res => {
+                that.setState(
+                  {
+                    repos: res
+                  },
+                  () => {}
+                );
+              });
+          }
+        );
       })
-
-    }).catch(function(error) {
-      // Handle Errors here.
-      var errorCode = error.code;
-      var errorMessage = error.message;
-      // The email of the user's account used.
-      var email = error.email;
-      // The firebase.auth.AuthCredential type that was used.
-      var credential = error.credential;
-      // ...
-    });
+      .catch(function(error) {
+        // Handle Errors here.
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        // The email of the user's account used.
+        var email = error.email;
+        // The firebase.auth.AuthCredential type that was used.
+        var credential = error.credential;
+        // ...
+      });
   }
-  beforeLogin(){
-    if(Object.keys(this.state.user).length === 0 && this.state.user.constructor === Object){
-      return(
-      <div>
-          <Login execute={this.execute}/>
-      </div>)
-    } else  {
-      return null
+  beforeLogin() {
+    if (
+      Object.keys(this.state.user).length === 0 &&
+      this.state.user.constructor === Object
+    ) {
+      return (
+        <div>
+          <Login execute={this.execute} />
+        </div>
+      );
+    } else {
+      return null;
     }
   }
-  renderRepositories(){
-        if(this.state.repos.length === 0){
-          return null
-        } else {
-          let component = []
-          for(let i = 0; i < this.state.repos.length; i ++){
-            let comp = <li className="repo" key={i}>
-              <div style={{float: "left" , textAlign:"left"}}>
-                <h2>{this.state.repos[i].name}</h2>
-                <p >{this.state.repos[i].description}</p>
-              </div>
-              <div tyle={{float: "right"}} className="repoImage">
-                <a href={this.state.repos[i].html_url}>
-                  <GoMarkGithub size="3em"/>
-                </a>
-              </div>
-            </li>
-            component.push(comp)
-            if(i === this.state.repos.length - 1){
-              return component
-            }
-          }
+  renderRepositories() {
+    if (this.state.repos.length === 0) {
+      return null;
+    } else {
+      let component = [];
+      for (let i = 0; i < this.state.repos.length; i++) {
+        let comp = (
+          <li className="repo" key={i}>
+            <div style={{ float: "left", textAlign: "left" }}>
+              <h2>{this.state.repos[i].name}</h2>
+              <p>{this.state.repos[i].description}</p>
+            </div>
+            <div tyle={{ float: "right" }} className="repoImage">
+              <a href={this.state.repos[i].html_url}>
+                <GoMarkGithub size="3em" />
+              </a>
+            </div>
+          </li>
+        );
+        component.push(comp);
+        if (i === this.state.repos.length - 1) {
+          return component;
         }
+      }
+    }
   }
   render() {
     return (
       <div className="App">
-        <header className="App-header">
-        </header>
-        {
-          this.beforeLogin()
-        }
-        <ul style={{listStyle: "none", display: "flex", flexDirection:"column"}}>
+        <header className="App-header" />
+        {this.beforeLogin()}
+
+        {this.renderSignup()
+        /* <ul
+          style={{
+            listStyle: "none",
+            display: "flex",
+            flexDirection: "column"
+          }}
+        >
           {
-            this.renderRepositories()
+            
+            //this.renderRepositories()
           }
-        </ul>
+        </ul> */
+        }
       </div>
     );
+  }
+
+  renderSignup() {
+    if (this.state.repos.length === 0) {
+      return null;
+    } else {
+      let comp = <Signup />;
+      return comp;
+    }
   }
 }
 

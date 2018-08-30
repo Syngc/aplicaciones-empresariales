@@ -2,9 +2,36 @@ body {
   background-color: #68829e;
 }
 
-logo {
-  width: 100%;
-  height: auto;
+.logo {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
+}
+
+.wrapper {
+  max-width: 380px;
+  margin: auto;
+  margin-top: 20px;
+  padding: 15px 35px 45px;
+  background-color: #505160;
+  -webkit-border-radius: 30px;
+  border-radius: 30px;
+  align-self: center;
+}
+
+.btn_login {
+  background-color: #aebd38; /* Green */
+  border: none;
+  margin-top: 30px;
+  color: #505160;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 20px;
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
 }
 
 .title-font {
