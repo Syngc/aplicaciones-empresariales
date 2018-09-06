@@ -1,11 +1,12 @@
 import React, { Component } from "react";
 import logo from "./logo.svg";
 import "./App.css";
-import Login from "./views/login/login";
-import Signup from "./views/signup/signup";
+import Login from "./views/login";
+import Signup from "./views/signup";
 import { firebase } from "./firebase";
 import { GithubLoginButton } from "react-social-login-buttons";
 import { GoMarkGithub } from "react-icons/go";
+import PropTypes from 'prop-types';
 
 class App extends Component {
   constructor(props) {
@@ -38,16 +39,9 @@ class App extends Component {
           },
           () => {
             fetch(that.state.user.additionalUserInfo.profile.repos_url)
+              .then(res => {return res.json();})
               .then(res => {
-                return res.json();
-              })
-              .then(res => {
-                that.setState(
-                  {
-                    repos: res
-                  },
-                  () => {}
-                );
+                that.setState({repos: res},() => {});
               });
           }
         );
@@ -63,6 +57,8 @@ class App extends Component {
         // ...
       });
   }
+
+
   beforeLogin() {
     if (
       Object.keys(this.state.user).length === 0 &&
@@ -77,6 +73,8 @@ class App extends Component {
       return null;
     }
   }
+
+
   renderRepositories() {
     if (this.state.repos.length === 0) {
       return null;
@@ -103,38 +101,21 @@ class App extends Component {
       }
     }
   }
+
+  static propTypes = { 
+    children: PropTypes.object.isRequired
+  };
+
   render() {
+    const {children}  = this.props;
     return (
       <div className="App">
-        <header className="App-header" />
-        {this.beforeLogin()}
-
-        {this.renderSignup()
-        /* <ul
-          style={{
-            listStyle: "none",
-            display: "flex",
-            flexDirection: "column"
-          }}
-        >
-          {
-            
-            //this.renderRepositories()
-          }
-        </ul> */
-        }
+        {children}
       </div>
     );
   }
 
-  renderSignup() {
-    if (this.state.repos.length === 0) {
-      return null;
-    } else {
-      let comp = <Signup />;
-      return comp;
-    }
-  }
+  
 }
 
 export default App;
