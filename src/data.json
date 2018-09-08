@@ -1,27 +1,61 @@
 {
-  "estudiantes": [
+  "tasks":[{
+    "classId":"123",
+    "description":"Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.",
+    "fecha":"1/2/12",
+    "name": "Dojo x"
+  },{
+    "classId":"124",
+    "description":"Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.",
+    "fecha":"1/2/12",
+    "name": "Dojo y"
+  }    
+  ],
+  "user":[
     {
-      "nombre": "Juanitp",
-      "link": "www.google.com",
-      "nota": "3"
-    },
-    {
-      "nombre": "Maria",
-      "link": "www.github.com",
-      "nota": "3"
+      "email": "alumno@alumno.com",
+      "name": "alumno",
+      "type": 1,
+      "userId": "alumnoId"
+    },{
+      "email": "profesor@profesor.com",
+      "name": "profesor",
+      "type": 2,
+      "userId": "profesorId"
     }
   ],
-  "entregas" : [
+  "classes":[
     {
-      "classId": "111",
-      "descripcion": "Esta es la clase 1",
-      "fecha": "11/12/2019",
-      "name": "Clase 1"
+      "nombre" : "clase 1",
+      "estudiantes": [{}],
+      "studentsPending":[],
+      "teacher": "profesorId",
+      "teacherName": "profesor",
+      "teachers":[]
     },{
-      "classId": "222",
-      "descripcion": "Esta es la clase 2",
-      "fecha": "11/12/2019",
-      "name": "Clase 2"
+      "nombre" : "clase 2",
+      "estudiantes": [{}],
+      "studentsPending":[],
+      "teacher": "profesorId",
+      "teacherName": "profesor",
+      "teachers":[]
+    },{
+      "nombre" : "clase 3",
+      "estudiantes": [{}],
+      "studentsPending":[],
+      "teacher": "profesorId",
+      "teacherName": "profesor",
+      "teachers":[]
+    }
+  ],
+  "deliverables":[
+    {
+      "taskId":"123",
+      "document":"alumnoDoc",
+      "docType":"CC",
+      "link":"alumno.link.com",
+      "userId":"alumnoId",
+      "score":0
     }
   ]
 }

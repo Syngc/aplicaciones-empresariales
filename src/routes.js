@@ -10,8 +10,8 @@ import Login from './views/login';
 import Signup from './views/signup';
 import Page404 from './views/page404';
 import Dashboard from './views/dashboard';
-import Subject from './views/subject';
-import Task from './views/tasks';
+import Tasks from './views/tasks';
+import Deliveries from './views/deliveries';
 
 const AppRoutes = () => {
     return (
@@ -20,8 +20,8 @@ const AppRoutes = () => {
                 <Route path="/login" component={Login} />
                 <Route path="/signup" component={Signup} />
                 <Route path="/home" component={Dashboard}/>
-                <Route path="/subject" component={Subject} />
-                <Route path="/task" component={Task} />
+                <Route path="/tasks" component={Tasks} />
+                <Route path="/deliveries" component={Deliveries} />
                 <Route path="/" component={Page404} />
             </Switch>
         </App>

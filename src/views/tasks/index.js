@@ -1,51 +1,26 @@
+
+
 import React from "react";
-import Nav from "../../components/nav";
-import Students from "../../components/students";
+import Nav from '../../components/nav'
+import Delivery from '../../components/delivery'
 
-class Task extends React.Component {
+class Tasks extends React.Component {
+  
+    
   render() {
-    let type = {
-      type: "2"
-    };
-    let data = require("../../data.json");
-    let students = data.estudiantes;
-    console.log(students);
 
-    if (type.type == "1") {
-      return (
-        <div className="tasks">
-          <Nav />
-          <h1> Entrega</h1>
-          <h3> Descipcion </h3>
-          <hr/>
-          <p>Lorem ipsu</p>
-          <form>
-            <span>Fecha de entrega: </span> <input />
-          </form>
-          <hr/>
-          <h1> Estudiantes</h1>
-          <Students estudiantes={students} />
+    let data = require("../../data.json");
+    let tareas = data.tasks
+
+    
+    return (
+        <div className="subject">
+            <Nav></Nav>
+            <h1 className="float-left">Entregas</h1>
+            <Delivery tareas={tareas}></Delivery>               
         </div>
-      );
-    } else {
-      return (
-        <div>
-          <Nav />
-          <h1> Entrega</h1>
-          <h3> Descripcion </h3>
-          <hr/>
-          <h3>Nota</h3>
-          <p>Lorem ipsu</p>
-          <span>Fecha de entrega: </span>
-          <hr/>
-          <form>
-            <h3> Repositorio</h3>
-            <input />
-          </form>
-        </div>
-      );
-    }
+        ); 
   }
 }
 
-export default Task;
+export default Tasks;

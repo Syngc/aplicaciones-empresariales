@@ -1,18 +1,7 @@
-<<<<<<< HEAD
 import React, { Component } from "react";
-import logo from "./logo.svg";
 import "./App.css";
 import Login from "./views/login";
-import Signup from "./views/signup";
-import { firebase } from "./firebase";
-=======
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
-import Login from './views/login/login'
 import {cloud} from './firebase/cloud';
->>>>>>> origin/Back
-import { GithubLoginButton } from "react-social-login-buttons";
 import { GoMarkGithub } from "react-icons/go";
 import PropTypes from 'prop-types';
 
@@ -26,46 +15,6 @@ class App extends Component {
     this.execute = this.execute.bind(this);
     this.renderRepositories = this.renderRepositories.bind(this);
   }
-<<<<<<< HEAD
-
-  execute(e) {
-    let that = this;
-    let fire = firebase.fire.firebase_;
-    var provider = new fire.auth.GithubAuthProvider();
-    provider.addScope("repo");
-    fire
-      .auth()
-      .signInWithPopup(provider)
-      .then(function(result) {
-        // This gives you a GitHub Access Token. You can use it to access the GitHub API.
-        var token = result.credential.accessToken;
-        // The signed-in user info.
-        var user = result.user;
-        // ...
-        that.setState(
-          {
-            user: result
-          },
-          () => {
-            fetch(that.state.user.additionalUserInfo.profile.repos_url)
-              .then(res => {return res.json();})
-              .then(res => {
-                that.setState({repos: res},() => {});
-              });
-          }
-        );
-      })
-      .catch(function(error) {
-        // Handle Errors here.
-        var errorCode = error.code;
-        var errorMessage = error.message;
-        // The email of the user's account used.
-        var email = error.email;
-        // The firebase.auth.AuthCredential type that was used.
-        var credential = error.credential;
-        // ...
-      });
-=======
   async execute(e) {
     let that = this
     let user = await cloud.login()
@@ -94,7 +43,6 @@ class App extends Component {
         })
       })
     }
->>>>>>> origin/Back
   }
 
 
@@ -149,23 +97,7 @@ class App extends Component {
     const {children}  = this.props;
     return (
       <div className="App">
-<<<<<<< HEAD
         {children}
-=======
-        <header className="App-header">
-        </header>
-        {
-          this.beforeLogin()
-        }
-        <ul style={{listStyle: "none", display: "flex", flexDirection:"column"}}>
-          {
-            this.renderRepositories()
-          }
-        </ul>
-        <button onClick={(e) => this.prueba(e)}>
-          a
-        </button>
->>>>>>> origin/Back
       </div>
     );
   }

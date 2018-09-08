@@ -2,14 +2,14 @@ import React from "react";
 
 //Components
 import Nav from "../../components/nav";
-import Card from "../../components/card";
 
 class Students extends React.Component {
   render() {
-    let students = this.props.estudiantes;
-
+    let estudiantes = this.props.estudiantes;
+    console.log(estudiantes);
+    
     return (
-      <div className="students">
+      <div className="estudiantes">
         <table className="table table-hover">
           <thead>
             <tr>
@@ -19,13 +19,13 @@ class Students extends React.Component {
             </tr>
           </thead>
           <tbody>
-            {students.map(student => (
+            {estudiantes.map(estudiante => (
               <tr>
-                <th scope="row">{student.nombre}</th>
+                <th scope="row">{estudiante.document}</th>
                 <td>
-                  <a href={"http://" + student.link}> {student.link} </a>
+                  <a href={"http://" + estudiante.link}> {estudiante.link} </a>
                 </td>
-                <td>{student.nota}</td>
+                <td>{estudiante.score}</td>
               </tr>
             ))}
           </tbody>
