@@ -1,9 +1,17 @@
+<<<<<<< HEAD
 import React, { Component } from "react";
 import logo from "./logo.svg";
 import "./App.css";
 import Login from "./views/login";
 import Signup from "./views/signup";
 import { firebase } from "./firebase";
+=======
+import React, { Component } from 'react';
+import logo from './logo.svg';
+import './App.css';
+import Login from './views/login/login'
+import {cloud} from './firebase/cloud';
+>>>>>>> origin/Back
 import { GithubLoginButton } from "react-social-login-buttons";
 import { GoMarkGithub } from "react-icons/go";
 import PropTypes from 'prop-types';
@@ -18,6 +26,7 @@ class App extends Component {
     this.execute = this.execute.bind(this);
     this.renderRepositories = this.renderRepositories.bind(this);
   }
+<<<<<<< HEAD
 
   execute(e) {
     let that = this;
@@ -56,6 +65,36 @@ class App extends Component {
         var credential = error.credential;
         // ...
       });
+=======
+  async execute(e) {
+    let that = this
+    let user = await cloud.login()
+    localStorage.setItem('user', JSON.stringify(user))
+    //TODO: Catch the error message if exists
+    fetch(user.additionalUserInfo.profile.repos_url).then((res)=>{
+      return(res.json())
+    }).then((res)=>{
+      that.setState({
+      repos: res
+      })
+    })
+  }
+  componentDidMount(){
+    let user = JSON.parse(localStorage.getItem('user'))
+    let that = this
+    if(user){
+      that.setState({
+        user: user
+      })
+      fetch(user.additionalUserInfo.profile.repos_url+'?access_token='+user.credential.accessToken).then((res)=>{
+        return(res.json())
+      }).then((res)=>{
+        that.setState({
+        repos: res
+        })
+      })
+    }
+>>>>>>> origin/Back
   }
 
 
@@ -110,7 +149,23 @@ class App extends Component {
     const {children}  = this.props;
     return (
       <div className="App">
+<<<<<<< HEAD
         {children}
+=======
+        <header className="App-header">
+        </header>
+        {
+          this.beforeLogin()
+        }
+        <ul style={{listStyle: "none", display: "flex", flexDirection:"column"}}>
+          {
+            this.renderRepositories()
+          }
+        </ul>
+        <button onClick={(e) => this.prueba(e)}>
+          a
+        </button>
+>>>>>>> origin/Back
       </div>
     );
   }

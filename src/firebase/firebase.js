@@ -1,6 +1,4 @@
-import firebase from 'firebase/app';
-import 'firebase/app'
-import 'firebase/auth'
+import firebase from 'firebase';
 
 const prodConfig = {
   apiKey: process.env.REACT_APP_INTEGRADOR_API_KEY,
