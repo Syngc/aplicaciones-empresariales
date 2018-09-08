@@ -10,5 +10,18 @@
       "link": "www.github.com",
       "nota": "3"
     }
+  ],
+  "entregas" : [
+    {
+      "classId": "111",
+      "descripcion": "Esta es la clase 1",
+      "fecha": "11/12/2019",
+      "name": "Clase 1"
+    },{
+      "classId": "222",
+      "descripcion": "Esta es la clase 2",
+      "fecha": "11/12/2019",
+      "name": "Clase 2"
+    }
   ]
 }

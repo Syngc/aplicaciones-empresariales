@@ -2,7 +2,7 @@ import React from "react";
 import Nav from "../../components/nav";
 import Students from "../../components/students";
 
-class Delivery extends React.Component {
+class Task extends React.Component {
   render() {
     let type = {
       type: "2"
@@ -11,16 +11,18 @@ class Delivery extends React.Component {
     let students = data.estudiantes;
     console.log(students);
 
-    if (type.type == "2") {
+    if (type.type == "1") {
       return (
-        <div className="deliveries">
+        <div className="tasks">
           <Nav />
           <h1> Entrega</h1>
           <h3> Descipcion </h3>
+          <hr/>
           <p>Lorem ipsu</p>
           <form>
             <span>Fecha de entrega: </span> <input />
           </form>
+          <hr/>
           <h1> Estudiantes</h1>
           <Students estudiantes={students} />
         </div>
@@ -31,9 +33,11 @@ class Delivery extends React.Component {
           <Nav />
           <h1> Entrega</h1>
           <h3> Descripcion </h3>
+          <hr/>
           <h3>Nota</h3>
           <p>Lorem ipsu</p>
           <span>Fecha de entrega: </span>
+          <hr/>
           <form>
             <h3> Repositorio</h3>
             <input />
@@ -44,4 +48,4 @@ class Delivery extends React.Component {
   }
 }
 
-export default Delivery;
+export default Task;
