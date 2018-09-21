@@ -1,5 +1,5 @@
 import firebase from 'firebase';
-
+require('dotenv').config()
 const prodConfig = {
   apiKey: process.env.REACT_APP_INTEGRADOR_API_KEY,
   authDomain: process.env.REACT_APP_INTEGRADOR_AUTH_DOMAIN,

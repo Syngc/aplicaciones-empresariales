@@ -1,6 +1,17 @@
+//Dependencies
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
+import { BrowserRouter as Router } from 'react-router-dom'
+
+//App
 import App from './App';
 
-ReactDOM.render(<App />, document.getElementById('root'));
+//Assets
+import './index.css';
+
+
+ReactDOM.render(
+<Router>
+    <App></App>
+</Router>, 
+document.getElementById('root'));
