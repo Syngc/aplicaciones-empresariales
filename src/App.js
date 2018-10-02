@@ -45,10 +45,6 @@ class App extends Component {
     return Object.keys(this.state.user).length === 0
   }
 
-  static propTypes = { 
-    children: PropTypes.object.isRequired
-  };
-
   render() {
     const {children}  = this.props;
     return (
