@@ -23,7 +23,4 @@ yarn-error.log*
 apis.profile
 .env
 package-lock.json
-<<<<<<< HEAD
 test/key.json
-=======
->>>>>>> aef091c86aac3b06768ed0f4018269c17a76cf03

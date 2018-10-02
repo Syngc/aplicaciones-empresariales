@@ -107,7 +107,8 @@ let cloud = {
       let token = fire.firebase_.auth.GithubAuthProvider.credential(credential.accessToken)
       fire.auth().signInAndRetrieveDataWithCredential(token)
       .then(function(res){
-        resolve({"status": "ok"})
+        console.log(fire.firebase_.auth().currentUser.uid)
+        resolve({"status": "ok", user: res})
       })
       .catch(function(error) {
         // Handle Errors here.

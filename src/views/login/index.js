@@ -8,9 +8,9 @@ class Login extends React.Component {
     let that = this
     let user = await this.props.cloud.login()
     localStorage.setItem('user', JSON.stringify(user))
-    console.log(user)
     if(user.additionalUserInfo.isNewUser){
-      this.props.history.push('/template', { detail: user})
+      this.props.setLogin(user)
+      this.props.history.push('/signup')
     } else {
       this.props.setLogin(user)
     }

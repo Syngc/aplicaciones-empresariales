@@ -10,11 +10,11 @@ class Signup extends React.Component {
     }
     let result = await this.props.cloud.updateUser(user)
     if(result.status === 'ok'){
-      this.props.setLogin(this.props.location.state.user)
+      this.props.setLogin(null, true)
     }
   }
   beforeLogin(){
-    if(!this.props.beforeLogin()){
+    if(this.props.user.additionalUserInfo && !this.props.user.additionalUserInfo.isNewUser){
       return (
         <Redirect to={'/home'} />
       )
