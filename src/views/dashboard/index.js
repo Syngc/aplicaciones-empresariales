@@ -1,9 +1,9 @@
 import React from "react";
 import { withRouter, Redirect} from "react-router-dom";
 //Components
-import Nav from '../../components/nav'
-import Groups from '../../components/groups'
-
+import Nav from "../../components/nav";
+import Footer from "../../components/footer";
+import Groups from "../../components/groups";
 
 class Dashboard extends React.Component {
   constructor(props){
@@ -27,8 +27,8 @@ class Dashboard extends React.Component {
   }
   render() {
     let newClass = {
-      nombre : "Crear nueva clase",
-    }
+      nombre: "Crear nueva clase"
+    };
     return (
       <div className="dashboard">
         {

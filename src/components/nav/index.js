@@ -1,9 +1,8 @@
-
 //Dependencies
 import React from "react";
 
 //Assets
-import Logo from '../../images/Logo_name_dark.png';
+import Logo from "../../images/Logo_name_dark.png";
 
 class Nav extends React.Component {
   render() {

@@ -1,28 +1,26 @@
-
-
 import React from "react";
-import { Link } from 'react-router-dom'
-import './card.css'
+import { Link } from "react-router-dom";
 
 class Groups extends React.Component {
-  
   render() {
-    let style = require('./card.css')
-    let clases = this.props.classes
-    
+    let clases = this.props.classes;
+
     return (
-      <div className=" table-responsive">
-      <table className="table table-hover">
-      <tbody>
-        {clases.map( data => 
-        <tr>
-          <th scope="row"><Link to="/tasks">{data.nombre}</Link></th>
-        </tr>
-        )}
-        
-      </tbody>
-    </table>
-    </div>
+      <div>
+        <div className="row">
+          {clases.map(data => (
+            <div className="col s2 m2">
+              <div className="card light-green accent-2">
+                <div className="card-content  blue-grey-text text-darken-3 title-font">
+                  <span className="card-title">
+                    <a href="#">{data.nombre}</a>
+                  </span>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
     );
   }
 }
