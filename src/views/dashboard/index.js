@@ -2,7 +2,6 @@ import React from "react";
 import { withRouter, Redirect} from "react-router-dom";
 //Components
 import Nav from "../../components/nav";
-import Footer from "../../components/footer";
 import Groups from "../../components/groups";
 
 class Dashboard extends React.Component {
@@ -26,21 +25,25 @@ class Dashboard extends React.Component {
     }
   }
   render() {
+    let data = require("../../data.json");
+    let classes = data.classes;
+    console.log(classes);
+
     let newClass = {
       nombre: "Crear nueva clase"
     };
     return (
-      <div className="dashboard">
-        {
-          this.beforeLogin()
-        }
-        <Nav></Nav>
-        <div className="container h-100">
-        <h1 className="float-left">Clases</h1>
-          <h2 className="float-right"> + </h2>
-           
-            <Groups classes={this.state.classes}></Groups>
-          </div>        
+      <div className="view">
+	{
+	  this.beforeLogin()
+	}
+        <header> 
+          <Nav></Nav>
+        </header>
+        <main>
+          <h1 className="float-left title-font">Clases</h1>
+          <Groups classes={this.state.classes} />
+        </main>
       </div>
     );
   }

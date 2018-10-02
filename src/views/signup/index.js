@@ -27,13 +27,25 @@ class Signup extends React.Component {
     return (
       <div className="main">
       {
-        this.beforeLogin()
+       // this.beforeLogin()
       }
         <div className="wrapper" style={style.wrapper}>
           <img className="logo" style={style.logo} src={logo} alt="Logo" />
-          <div className="line" style={style.line}>
-            <hr />
+          
+          <form>
+            <div className="row">
+            <div class="input-field col s8">
+            <input placeholder="Cedula" id="first_name" type="text" class="validate" data-length="10"/>
+            <label for="first_name">Cedula</label>
           </div>
+          <div class="input-field col s4">
+          <select class="browser-default">
+            <option value="1">C.C</option>
+            <option value="2">T.I</option>
+          </select>
+          </div>
+          </div>
+          </form>
           <button
             className="btn_login  title-font"
             style={style.btn_login}

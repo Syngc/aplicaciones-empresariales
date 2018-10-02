@@ -34,10 +34,10 @@ class App extends Component {
   async componentWillMount(){
     let user = JSON.parse(localStorage.getItem('user'))
     if(user){
-      this.setState({
+      await this.setState({
         user: user
       }, async () => {
-        await cloud.loginWithToken(user.credential)
+        cloud.loginWithToken(user.credential)
       })
     }
   }
@@ -50,9 +50,15 @@ class App extends Component {
     return (
       <div className="App">
         <Switch>
+<<<<<<< Updated upstream
             <Route path="/login" render={() => <Login cloud={cloud} setLogin={this.setLogin} beforeLogin={this.beforeLogin}></Login>} />
             <Route path="/signup" render={() => <Signup cloud={cloud} setLogin={this.setLogin} user={this.state.user}></Signup>} />
             <Route path="/home" render={() => <Dashboard cloud={cloud} beforeLogin={this.beforeLogin} user={this.state.user}></Dashboard>}/>
+=======
+            <Route exact path="/home" component={Dashboard}/>
+            <Route exact path="/" render={() => <Login cloud={cloud} setLogin={this.setLogin} beforeLogin={this.beforeLogin}></Login>} />
+            <Route path="/signup" component={Signup}/>
+>>>>>>> Stashed changes
             <Route path="/tasks" component={Tasks} />
             <Route path="/deliveries" component={Deliveries} />
             <Route path="/" component={Page404} />

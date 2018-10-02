@@ -13,7 +13,7 @@ class Groups extends React.Component {
               <div className="card light-green accent-2">
                 <div className="card-content  blue-grey-text text-darken-3 title-font">
                   <span className="card-title">
-                    <a href="#">{data.nombre}</a>
+                    <a href="/tasks">{data.nombre}</a>
                   </span>
                 </div>
               </div>

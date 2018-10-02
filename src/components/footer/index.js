@@ -15,10 +15,8 @@ class Footer extends React.Component {
       nombre: "Crear nueva clase"
     };
     return (
-      <footer className="page-footer">
-        <div className="footer-copyright">
-          <div className="container">© 2014 Copyright Text</div>
-        </div>
+      <footer className="page-footer footer-fixed green darken-2">
+          <div className="container title-font center">WORKSPACE</div>
       </footer>
     );
   }
