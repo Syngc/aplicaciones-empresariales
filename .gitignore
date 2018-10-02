@@ -22,3 +22,5 @@ yarn-error.log*
 /src/config.js
 apis.profile
 .env
+package-lock.json
+test/key.json

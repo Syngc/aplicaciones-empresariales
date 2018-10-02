@@ -1,52 +1,9 @@
-.App {
-  text-align: center;
+body {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
 }
 
-.App-title {
-  font-size: 1.5em;
-}
-
-.App-intro {
-  font-size: large;
-}
-
-@keyframes App-logo-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-.repoImage {
-  float: right;
-  padding-right: 2%;
-  padding-top: 5%;
-}
-.repo {
-  border-top: solid 1px;
-}
-.repoImage a{
-  color: inherit;
-}
-
-ul {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-  background-color: #333;
-}
-
-li {
-  float:right;
-}
-
-li a {
-  display: block;
-  color: white;
-  text-align: center;
-  padding: 14px 16px;
-  text-decoration: none;
-}
-
-li a:hover {
-  background-color: #61FF7C;
+main {
+  flex: 1 0 auto;
 }

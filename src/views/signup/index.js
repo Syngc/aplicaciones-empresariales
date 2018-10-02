@@ -1,21 +1,43 @@
 import React from "react";
 //import style from "./signup.css";
 import logo from "../../images/logo_dark.png";
-
+import { withRouter, Redirect} from "react-router-dom";
 class Signup extends React.Component {
+  async updateType(e, type){
+    e.preventDefault()
+    let user = {
+      type: type
+    }
+    let result = await this.props.cloud.updateUser(user)
+    if(result.status === 'ok'){
+      this.props.setLogin(null, true)
+    }
+  }
+  beforeLogin(){
+    if(this.props.user.additionalUserInfo && !this.props.user.additionalUserInfo.isNewUser){
+      return (
+        <Redirect to={'/home'} />
+      )
+    } else {
+      return null
+    }
+  }
   render() {
     let style = require("./signup.css");
     return (
       <div className="main">
+      {
+        this.beforeLogin()
+      }
         <div className="wrapper" style={style.wrapper}>
           <img className="logo" style={style.logo} src={logo} alt="Logo" />
-          <div class="line" style={style.line}>
+          <div className="line" style={style.line}>
             <hr />
           </div>
           <button
             className="btn_login  title-font"
             style={style.btn_login}
-            onClick={e => this.props.execute(e)}
+            onClick={e => this.updateType(e, 2)}
           >
             Profesor
           </button>
@@ -23,7 +45,7 @@ class Signup extends React.Component {
           <button
             className="btn_login  title-font"
             style={style.btn_login}
-            onClick={e => this.props.execute(e)}
+            onClick={e => this.updateType(e, 1)}
           >
             Estudiante
           </button>
@@ -33,4 +55,4 @@ class Signup extends React.Component {
   }
 }
 
-export default Signup;
+export default withRouter(Signup);
