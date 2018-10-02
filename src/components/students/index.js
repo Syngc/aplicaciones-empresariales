@@ -9,6 +9,7 @@ class Students extends React.Component {
     console.log(estudiantes);
     
     return (
+      <div className="row">
        <div className="col s12 m12">
         <div className="card-panel ">
         <table className="table table-hover">
@@ -31,6 +32,7 @@ class Students extends React.Component {
             ))}
           </tbody>
         </table>
+        </div>
         </div>
         </div>
     );
