@@ -3,6 +3,8 @@ import { withRouter, Redirect} from "react-router-dom";
 //Components
 import Nav from "../../components/nav";
 import Groups from "../../components/groups";
+import {Tabs, Tab} from "react-materialize";
+
 
 class Dashboard extends React.Component {
   constructor(props){
@@ -41,8 +43,10 @@ class Dashboard extends React.Component {
           <Nav></Nav>
         </header>
         <main>
-          <h1 className="float-left title-font">Clases</h1>
-          <Groups classes={this.state.classes} />
+        <h1 className="float-left title-font"></h1>
+        <Tabs className='tab-demo z-depth-1'>
+          <Tab title="Clases" active>  <Groups classes={this.state.classes} /></Tab>
+        </Tabs>         
         </main>
       </div>
     );
