@@ -11,6 +11,7 @@ class Login extends React.Component {
       this.props.history.push('/signup')
     } else {
       this.props.setLogin(user)
+      this.props.history.push('/home')
     }
   }
   componentDidMount(){
