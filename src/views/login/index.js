@@ -1,11 +1,9 @@
 import React from "react";
 import "./login.css";
 import logo from "../../images/logo_light.png";
-import { Redirect } from 'react-router'
-import { withRouter, Link } from "react-router-dom";
+import { withRouter} from "react-router-dom";
 class Login extends React.Component {
    async execute(e) {
-    let that = this
     let user = await this.props.cloud.login()
     localStorage.setItem('user', JSON.stringify(user))
     if(user.additionalUserInfo.isNewUser){
@@ -15,21 +13,14 @@ class Login extends React.Component {
       this.props.setLogin(user)
     }
   }
-  beforeLogin(){
+  componentDidMount(){
     if(!this.props.beforeLogin()){
-      return (
-        <Redirect to={'/home'} />
-      )
-    } else {
-      return null
-    }
+      this.props.history.replace('/home')
+    } 
   }
   render() {
     return (
       <div className="main">
-      {
-        this.beforeLogin()
-      }
         <div className="wrapper">
           <img className="logo" src={logo} alt="Logo" />
           <button

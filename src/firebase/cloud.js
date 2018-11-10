@@ -24,17 +24,10 @@ let cloud = {
       provider.addScope('repo');
       // Make the sigin window popup.
       fire.auth().signInWithPopup(provider).then(function(result) {
-        // This gives you a GitHub Access Token. You can use it to access the GitHub API.
-        var token = result.credential.accessToken;
         // If everything is okay, execute the register function.
         that.register(resolve, result)
       }).catch(function(error) {
         var errorCode = error.code;
-        var errorMessage = error.message;
-        // The email of the user's account used.
-        var email = error.email;
-        // The firebase.auth.AuthCredential type that was used.
-        var credential = error.credential;
         // Return the error code in the resolve function.
         if(errorCode!=='auth/cancelled-popup-request' || errorCode!=='auth/popup-closed-by-user'){
           resolve({error: errorCode})
@@ -107,20 +100,30 @@ let cloud = {
       let token = fire.firebase_.auth.GithubAuthProvider.credential(credential.accessToken)
       fire.auth().signInAndRetrieveDataWithCredential(token)
       .then(function(res){
-        console.log(fire.firebase_.auth().currentUser.uid)
         resolve({"status": "ok", user: res})
       })
       .catch(function(error) {
-        // Handle Errors here.
-        var errorCode = error.code;
         var errorMessage = error.message;
-        // The email of the user's account used.
-        var email = error.email;
-        // The firebase.auth.AuthCredential type that was used.
-        var credential = error.credential;
-        // ...
         resolve({"error": errorMessage})
       });
+    })
+  },
+  /**
+   * Function to make a logout
+   */
+  logout(){
+    return new Promise(resolve => {
+      var firebase = fire.firebase_;
+      firebase.auth().signOut()
+      .then(function() {
+        // Sign-out successful.
+        resolve(true)
+      })
+      .catch(function(error) {
+        console.log(error)
+        resolve(false)
+        // An error happened
+      }); 
     })
   },
   /**
@@ -135,29 +138,35 @@ let cloud = {
       var firestore = fire.firebase_.firestore();
       const settings = {timestampsInSnapshots: true};
       firestore.settings(settings);
-      // Create a new document and get its id
-      let newClass = firestore.collection("classes").doc()
-      // Assign the current user(a teacher) to the teachers object in the class
-      let teachers = {} 
-      teachers[fire.firebase_.auth().currentUser.uid] = true
-      /**
-       * Function that creates the new class
-       * @param {string} name - The name of the class
-       * @param {string} code - The class's code
-       * @param {string} teacher - The teacher that creates the class
-       * @param {object} teachers - The list of teachers
-       */
-      newClass.set({
-        name: name,
-        code: code,
-        teacher: fire.firebase_.auth().currentUser.uid,
-        teachers: teachers
-      }).then(() => {
-        // Return the created status
-        resolve({'status': 'created'})
-      }).catch((err)=>{
-        // Return the error status
-        resolve({'status': 'error', 'error': err})
+      firestore.collection("classes").where('code', '==', code).get().then((doc) => {
+        if(doc.docs.length === 0){
+          // Create a new document and get its id
+          let newClass = firestore.collection("classes").doc()
+          // Assign the current user(a teacher) to the teachers object in the class
+          let teachers = {} 
+          teachers[fire.firebase_.auth().currentUser.uid] = true
+          /**
+            * Function that creates the new class
+            * @param {string} name - The name of the class
+            * @param {string} code - The class's code
+            * @param {string} teacher - The teacher that creates the class
+            * @param {object} teachers - The list of teachers
+            */
+          newClass.set({
+            name: name,
+            code: code,
+            teacher: fire.firebase_.auth().currentUser.uid,
+            teachers: teachers
+          }).then(() => {
+            // Return the created status
+            resolve({'status': 'created'})
+          }).catch((err)=>{
+            // Return the error status
+            resolve({'status': 'error', 'error': err})
+          })
+        } else {
+          resolve({'status':'error', 'error': 'Ya hay una clase creada con ese código, trate de unirse.'})
+        }
       })
     })
   },
@@ -220,30 +229,37 @@ let cloud = {
    * Get user info from the database
    */
   getUser(){
-    return new Promise(resolve => {
+    return new Promise(resolve => { 
       var firestore = fire.firebase_.firestore();
       const settings = {timestampsInSnapshots: true};
       firestore.settings(settings);
-      firestore.collection("users").doc(fire.firebase_.auth().currentUser.uid).get().then((doc) => {
-        resolve(doc.data())
-      }).catch((err)=>{
-        resolve({'status': 'error', 'error': err})
-      })
+      fire.firebase_.auth().onAuthStateChanged(function(user) {
+        if (user) {
+          firestore.collection("users").doc(fire.firebase_.auth().currentUser.uid).get().then((doc) => {
+            resolve(doc.data())
+          }).catch((err)=>{
+            resolve({'status': 'error', 'error': err})
+          })
+        } else {
+          // No user is signed in.
+        }
+      });
     })
   },
   /**
    * Get classes per student
    */
   getClassesStudents(){
-    return new Promise(resolve => {
+    return new Promise(resolve => {  
       var firestore = fire.firebase_.firestore();
       const settings = {timestampsInSnapshots: true};
       firestore.settings(settings);
-      // Get classes where the student is in the students list
       firestore.collection("classes").where('students.'+fire.firebase_.auth().currentUser.uid, '==', true).get().then((querySnapshot) => {
         // Return the array of students
         let result = querySnapshot.docs.map(function (documentSnapshot) {
-          return documentSnapshot.data();
+          let data = documentSnapshot.data()
+          data.id = documentSnapshot.id
+          return data
         })
         resolve(result)
       }).catch((err)=>{
@@ -262,8 +278,24 @@ let cloud = {
       // Get classes where the teachers is in the teachers list
       firestore.collection("classes").where('teachers.'+fire.firebase_.auth().currentUser.uid, '==', true).get().then((querySnapshot) => {
         let result = querySnapshot.docs.map(function (documentSnapshot) {
-          return documentSnapshot.data();
+          let data = documentSnapshot.data()
+          data.id = documentSnapshot.id
+          return data
         })
+        resolve(result)
+      }).catch((err)=>{
+        resolve({'status': 'error', 'error': err})
+      })
+    })
+  },
+  validateClass(id){
+    return new Promise(resolve => {
+      var firestore = fire.firebase_.firestore();
+      const settings = {timestampsInSnapshots: true};
+      firestore.settings(settings);
+      // Get classes where the teachers is in the teachers list
+      firestore.collection("classes").doc(id).get().then((querySnapshot) => {
+        let result = querySnapshot.data()
         resolve(result)
       }).catch((err)=>{
         resolve({'status': 'error', 'error': err})
@@ -353,7 +385,7 @@ let cloud = {
    * Enroll student in class
    * @param {string} classId 
    */
-  enrollStudent(classId){
+  enrollStudent(classCode){
     return new Promise(resolve => {
       var firestore = fire.firebase_.firestore();
       const settings = {timestampsInSnapshots: true};
@@ -361,22 +393,26 @@ let cloud = {
       studentsPending[fire.firebase_.auth().currentUser.uid] = true
       firestore.settings(settings);
       // Get class with the given id
-      firestore.collection("classes").doc(classId).get().then((doc) => {
+      firestore.collection("classes").where('code', '==', classCode).get().then((doc) => {
         // Check if the the students exists and if the logged user is in the class
-        if((doc.data().students && doc.data().students[fire.firebase_.auth().currentUser.uid]) || (doc.data().studentsPending && doc.data().studentsPending[fire.firebase_.auth().currentUser.uid])){
-          // If the user is in the class, resolve an error
-          resolve({error: 'You are in this class currently.'})
+        if(doc.docs.length!==0){
+          if((doc.docs[0].data().students && doc.docs[0].data().students[fire.firebase_.auth().currentUser.uid]) || (doc.docs[0].data().studentsPending && doc.docs[0].data().studentsPending[fire.firebase_.auth().currentUser.uid])){
+            // If the user is in the class, resolve an error
+            resolve({error: 'You are in this class currently.'})
+          } else {
+            // If the user is not in the class, add it to the pending students list
+            firestore.collection("classes").doc(doc.docs[0].id).set({
+              studentsPending: studentsPending
+            }, { merge: true })
+            .then(function() {
+              resolve({'status': 'created'})
+            })
+            .catch(function(error) {
+              resolve({error: error})
+            })
+          }
         } else {
-          // If the user is not in the class, add it to the pending students list
-          firestore.collection("classes").doc(classId).set({
-            studentsPending: studentsPending
-          }, { merge: true })
-          .then(function() {
-            resolve({'status': 'ok'})
-          })
-          .catch(function(error) {
-            resolve({error: error})
-          })
+          resolve({'status': 'error', 'error': 'La clase con ese código no existe'})
         }
       }).catch((err)=>{
         resolve({'status': 'error', 'error': err})
@@ -387,7 +423,7 @@ let cloud = {
    * Enroll the teacher in the given class
    * @param {string} classId 
    */
-  enrollTeacher(classId){
+  enrollTeacher(classCode){
     return new Promise(resolve => {
       var firestore = fire.firebase_.firestore();
       const settings = {timestampsInSnapshots: true};
@@ -395,20 +431,129 @@ let cloud = {
       teachersPending[fire.firebase_.auth().currentUser.uid] = true
       firestore.settings(settings);
       // Get given class
-      firestore.collection("classes").doc(classId).get().then((doc) => {
-        // Check if the the students exists and if the logged user is in the class
-        if((doc.data().teachers && doc.data().teachers[fire.firebase_.auth().currentUser.uid]) || (doc.data().teachersPending && doc.data().teachersPending[fire.firebase_.auth().currentUser.uid])){
-          resolve({error: 'You are in this class currently.'})
+      firestore.collection("classes").where('code', '==', classCode).get().then((doc) => {
+        // Check if the the students exists and if the logged user is in the class 
+        if(doc.docs.length!==0){
+          if((doc.docs[0].data().teachers && doc.docs[0].data().teachers[fire.firebase_.auth().currentUser.uid]) || (doc.docs[0].data().teachersPending && doc.docs[0].data().teachersPending[fire.firebase_.auth().currentUser.uid])){
+            // If the user is in the class, resolve an error
+            resolve({error: 'You are in this class currently.'})
+          } else {
+            firestore.collection("classes").doc(doc.docs[0].id).set({
+              teachersPending: teachersPending
+            }, { merge: true })
+            .then(function() {
+              resolve({'status': 'created'})
+            })
+            .catch(function(error) {
+              resolve({error: error})
+            })
+          }
         } else {
-          firestore.collection("classes").doc(classId).set({
-            teachersPending: teachersPending
-          }, { merge: true })
-          .then(function() {
-            resolve({'status': 'ok'})
+          resolve({'status': 'error', 'error': 'La clase con ese código no existe'})
+        }
+      }).catch((err)=>{
+        resolve({'status': 'error', 'error': err})
+      })
+    })
+  },
+  getEnrolledStudents(classId){
+    return new Promise(resolve => {
+      var firestore = fire.firebase_.firestore();
+      const settings = {timestampsInSnapshots: true};
+      firestore.settings(settings);
+      firestore.collection("classes").doc(classId).get().then((doc) => {
+        let result = doc.data()
+        if(result.studentsPending){
+          let students = Object.keys(result.studentsPending)
+          let final = students.map(async (student) => {
+            let data
+            await firestore.collection('users').doc(student).get().then((doc) => {
+              data = doc.data()
+              data.id = doc.id
+            })
+            return data
           })
-          .catch(function(error) {
-            resolve({error: error})
+          Promise.all(final).then((completed) => resolve(completed))
+        } else {
+          resolve([])
+        }
+      }).catch((err)=>{
+        resolve({'status': 'error', 'error': err})
+      })
+    })
+  },  
+  getStudents(classId){
+    return new Promise(resolve => {
+      var firestore = fire.firebase_.firestore();
+      const settings = {timestampsInSnapshots: true};
+      firestore.settings(settings);
+      firestore.collection("classes").doc(classId).get().then((doc) => {
+        let result = doc.data()
+        if(result.students){
+          let students = Object.keys(result.students)
+          let final = students.map(async (student) => {
+            let data
+            await firestore.collection('users').doc(student).get().then((doc) => {
+              data = doc.data()
+              data.id = doc.id
+            })
+            return data
           })
+          Promise.all(final).then((completed) => resolve(completed))
+        } else {
+          resolve([])
+        }
+      }).catch((err)=>{
+        resolve({'status': 'error', 'error': err})
+      })
+    })
+  },
+  getEnrolledTeachers(classId){
+    return new Promise(resolve => {
+      var firestore = fire.firebase_.firestore();
+      const settings = {timestampsInSnapshots: true};
+      firestore.settings(settings);
+      firestore.collection("classes").doc(classId).get().then((doc) => {
+        let result = doc.data()
+        if(result.teachersPending){
+          let teachers = Object.keys(result.teachersPending)
+          let final = teachers.map(async (teacher) => {
+            let data
+            await firestore.collection('users').doc(teacher).get().then((doc) => {
+              data = doc.data()
+              data.id = doc.id
+            })
+            return data
+          })
+          Promise.all(final).then((completed) => resolve(completed))
+        } else {
+          resolve([])
+        }
+      }).catch((err)=>{
+        resolve({'status': 'error', 'error': err})
+      })
+    })
+  },  
+  getTeachers(classId){
+    return new Promise(resolve => {
+      var firestore = fire.firebase_.firestore();
+      const settings = {timestampsInSnapshots: true};
+      firestore.settings(settings);
+      firestore.collection("classes").doc(classId).get().then((doc) => {
+        let result = doc.data()
+        if(result.teachers){
+          let teachers = Object.keys(result.teachers)
+          let final = teachers.map(async (teacher) => {
+            let data
+            await firestore.collection('users').doc(teacher).get().then((doc) => {
+              data = doc.data()
+              data.id = doc.id
+            })
+            return data
+          })
+          Promise.all(final).then((completed) => resolve(completed))
+        } else {
+          resolve([])
         }
       }).catch((err)=>{
         resolve({'status': 'error', 'error': err})
@@ -432,7 +577,58 @@ let cloud = {
         // Delete the student from the students pending object
         delete data.studentsPending[userId]
         // Add the student to the students object
+        if(!data.students){
+          data.students = {}
+        }
         data.students[userId] = true
+        // Sabe the new object
+        firestore.collection("classes").doc(classId).set(data)
+        .then(function() {
+          resolve({'status': 'ok'})
+        })
+        .catch(function(error) {
+          resolve({error: error})
+        })
+      }).catch((err)=>{
+        resolve({'status': 'error', 'error': err})
+      })
+    })
+  },  
+  rejectStudentEnroll(classId, userId){
+    return new Promise(resolve => {
+      var firestore = fire.firebase_.firestore();
+      const settings = {timestampsInSnapshots: true};
+      firestore.settings(settings);
+      // Get the document of the given class
+      firestore.collection("classes").doc(classId).get().then((doc) => {
+        // Get the class data
+        let data = doc.data()
+        // Delete the student from the students pending object
+        delete data.studentsPending[userId]
+        // Sabe the new object
+        firestore.collection("classes").doc(classId).set(data)
+        .then(function() {
+          resolve({'status': 'ok'})
+        })
+        .catch(function(error) {
+          resolve({error: error})
+        })
+      }).catch((err)=>{
+        resolve({'status': 'error', 'error': err})
+      })
+    })
+  },
+  deleteStudent(classId, userId){
+    return new Promise(resolve => {
+      var firestore = fire.firebase_.firestore();
+      const settings = {timestampsInSnapshots: true};
+      firestore.settings(settings);
+      // Get the document of the given class
+      firestore.collection("classes").doc(classId).get().then((doc) => {
+        // Get the class data
+        let data = doc.data()
+        // Delete the student from the students pending object
+        delete data.students[userId]
         // Sabe the new object
         firestore.collection("classes").doc(classId).set(data)
         .then(function() {
@@ -471,6 +667,54 @@ let cloud = {
         .catch(function(error) {
           resolve({error: error})
         })
+      }).catch((err)=>{
+        resolve({'status': 'error', 'error': err})
+      })
+    })
+  }, 
+  rejectTeacherEnroll(classId, userId){
+    return new Promise(resolve => {
+      var firestore = fire.firebase_.firestore();
+      const settings = {timestampsInSnapshots: true};
+      firestore.settings(settings);
+      firestore.collection("classes").doc(classId).get().then((doc) => {
+        // Get class data
+        let data = doc.data()
+        // Delete teacher from the pending teachers
+        delete data.teachersPending[userId]
+        firestore.collection("classes").doc(classId).set(data)
+        .then(function() {
+          resolve({'status': 'ok'})
+        })
+        .catch(function(error) {
+          resolve({error: error})
+        })
+      }).catch((err)=>{
+        resolve({'status': 'error', 'error': err})
+      })
+    })
+  },
+  deleteTeacher(classId, userId){
+    return new Promise(resolve => {
+      var firestore = fire.firebase_.firestore();
+      const settings = {timestampsInSnapshots: true};
+      firestore.settings(settings);
+      firestore.collection("classes").doc(classId).get().then((doc) => {
+        // Get class data
+        let data = doc.data()
+        // Delete teacher from the pending teachers
+        if(userId===data.teacher){
+          resolve({'status': 'error', error: 'No puedes borrar al creador de la clase'})
+        } else {
+          delete data.teachers[userId]
+          firestore.collection("classes").doc(classId).set(data)
+          .then(function() {
+            resolve({'status': 'ok'})
+          })
+          .catch(function(error) {
+            resolve({error: error})
+          })
+        }
       }).catch((err)=>{
         resolve({'status': 'error', 'error': err})
       })

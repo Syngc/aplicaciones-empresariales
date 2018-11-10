@@ -1,13 +1,8 @@
 import React from "react";
 
-//Components
-import Nav from "../../components/nav";
-
 class Students extends React.Component {
   render() {
     let estudiantes = this.props.estudiantes;
-    console.log(estudiantes);
-    
     return (
       <div className="row">
        <div className="col s12 m12">

@@ -1,22 +1,32 @@
 import React from "react";
-
-//Components
-import Nav from "../../components/nav";
-import Sidebar from "../../components/sidebar";
-import Groups from "../../components/groups";
-
+import { element } from "prop-types";
 class Miembros extends React.Component {
   render() {
+    const {
+      students,
+      teachers,
+      deleteStudents,
+      deleteTeachers
+    } = this.props
+    let studentsList = students.map((element, index) => {
+      return  <li className="collection-item" key={index}><div>{element.cc}<div style={{cursor: 'pointer'}} className="secondary-content"><i className="material-icons" onClick={() => deleteStudents(element.id)}>close</i></div></div></li>
+    })
+    let teachersList = teachers.map((element, index) => {
+      return  <li className="collection-item" key={index}><div>{element.cc} - {element.email}<div style={{cursor: 'pointer'}} className="secondary-content"><i className="material-icons" onClick={() => deleteTeachers(element.id)}>close</i></div></div></li>
+    })
     return (
       <div>
-          <ul class="collection with-header">
-            <li class="collection-header"><h4>Profesores</h4></li>
-            <li class="collection-item"><div>Alvin<a href="#!" class="secondary-content"><i class="material-icons">close</i></a></div></li>
+          <ul className="collection with-header">
+            <li className="collection-header"><h4>Profesores</h4></li>
+            {
+              teachersList
+            }
         </ul>
-        <ul class="collection with-header">
-            <li class="collection-header"><h4>Estudiantes</h4></li>
-            <li class="collection-item"><div>Alvin<a href="#!" class="secondary-content"><i class="material-icons">close</i></a></div></li>
-            <li class="collection-item"><div>Alvin<a href="#!" class="secondary-content"><i class="material-icons">close</i></a></div></li>
+        <ul className="collection with-header">
+            <li className="collection-header"><h4>Estudiantes</h4></li>
+            {
+              studentsList
+            }
         </ul>
       </div>
 

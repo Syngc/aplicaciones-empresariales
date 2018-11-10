@@ -4,7 +4,6 @@ import {cloud} from './firebase/cloud';
 import { Route, Switch, Redirect } from 'react-router'
 import Login from './views/login';
 import Signup from './views/signup';
-import Page404 from './views/page404';
 import Dashboard from './views/dashboard';
 import Tasks from './views/tasks';
 import Deliveries from './views/deliveries';
@@ -18,6 +17,7 @@ class App extends Component {
     };
     this.beforeLogin = this.beforeLogin.bind(this)
     this.setLogin = this.setLogin.bind(this)
+    this.logout = this.logout.bind(this)
   }
   async setLogin(user, val) {
     if(val){
@@ -28,6 +28,16 @@ class App extends Component {
     } else {
       this.setState({
         user: user
+      })
+    }
+  }
+  async logout(){
+    let res = cloud.logout()
+    if(res){
+      this.setState({
+        user: {}
+      }, ()=>{
+        localStorage.removeItem('user')
       })
     }
   }
@@ -46,16 +56,15 @@ class App extends Component {
   }
 
   render() {
-    const {children}  = this.props;
     return (
       <div className="App">
         <Switch>
             <Route path="/login" render={() => <Login cloud={cloud} setLogin={this.setLogin} beforeLogin={this.beforeLogin}></Login>} />
             <Route path="/signup" render={() => <Signup cloud={cloud} setLogin={this.setLogin} user={this.state.user}></Signup>} />
-            <Route path="/home" render={() => <Dashboard cloud={cloud} beforeLogin={this.beforeLogin} user={this.state.user}></Dashboard>}/>
-            <Route path="/tasks" component={Tasks} />
-            <Route path="/deliveries" component={Deliveries} />
-            <Route path="/" component={Page404} />
+            <Route path="/home" render={() => <Dashboard cloud={cloud} beforeLogin={this.beforeLogin} logout={this.logout} user={this.state.user}></Dashboard>}/>
+            <Route path="/tasks/:id" render={() => <Tasks cloud={cloud} beforeLogin={this.beforeLogin} user={this.state.user}></Tasks>} />
+            <Route path="/deliveries" render={() => <Deliveries cloud={cloud} beforeLogin={this.beforeLogin} user={this.state.user}></Deliveries>} />
+            <Redirect from="/" to='/home' />
         </Switch>
       </div>
     );

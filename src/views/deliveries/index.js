@@ -5,23 +5,17 @@ import {Tabs, Tab} from "react-materialize";
 
 
 class Deliveries extends React.Component {
-  render() {
-    let type = {
-      type: "2"
-    };
-
+  render() { 
     let data = require("../../data.json");
     let tarea = data.tasks[1];
     let estudiantes = data.deliverables;
-    console.log(tarea);
-
     return (    
       <div className="view">
-      <header>
-        <Nav></Nav>
+      <header> 
+        <Nav logout={this.props.logout}></Nav>
       </header>
       <main>
-        <h1 className="float-left title-font"></h1>
+        <h1 className="float-left title-font"> </h1>
         <Tabs className='tab-demo z-depth-1'>
           <Tab title="Informacion" active> 
           <div className="row">

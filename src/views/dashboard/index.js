@@ -13,10 +13,6 @@ class Dashboard extends React.Component {
       classes: []
     }
   }
-  async componentDidMount(){
-    let user = await this.props.cloud.getUser()
-    console.log(user)
-  }
   beforeLogin(){
     if(this.props.beforeLogin()){
       return (
@@ -27,25 +23,18 @@ class Dashboard extends React.Component {
     }
   }
   render() {
-    let data = require("../../data.json");
-    let classes = data.classes;
-    console.log(classes);
-
-    let newClass = {
-      nombre: "Crear nueva clase"
-    };
     return (
       <div className="view">
-	{
-	  this.beforeLogin()
-	}
+        {
+          this.beforeLogin()
+        }
         <header> 
-          <Nav></Nav>
+          <Nav logout={this.props.logout}></Nav>
         </header>
-        <main>
-        <h1 className="float-left title-font"></h1>
+        <main>        
+        <h1 className="float-left title-font"> </h1>
         <Tabs className='tab-demo z-depth-1'>
-          <Tab title="Clases" active>  <Groups classes={this.state.classes} /></Tab>
+          <Tab title="Clases" active>  <Groups /></Tab>
         </Tabs>         
         </main>
       </div>

@@ -1,47 +1,55 @@
 import React from "react";
 //import style from "./signup.css";
 import logo from "../../images/logo_dark.png";
-import { withRouter, Redirect} from "react-router-dom";
+import { withRouter} from "react-router-dom";
 class Signup extends React.Component {
-  async updateType(e, type){
+  constructor(props){
+    super(props)
+    this.state ={
+      cc: '',
+      cctype: 'cc'
+    }
+  }
+  updateType = async (e, type) => {
     e.preventDefault()
     let user = {
-      type: type
+      type: type,
+      cc: this.state.cc,
+      cctype: this.state.cctype
     }
     let result = await this.props.cloud.updateUser(user)
     if(result.status === 'ok'){
       this.props.setLogin(null, true)
+      this.props.history.push('/home')
     }
   }
-  beforeLogin(){
-    if(this.props.user.additionalUserInfo && !this.props.user.additionalUserInfo.isNewUser){
-      return (
-        <Redirect to={'/home'} />
-      )
-    } else {
-      return null
-    }
+  handler = (e) => {
+    this.setState({
+      cc: e.target.value
+    })
+  }  
+  handlerC = (e) => {
+    this.setState({
+      cctype: e.target.value
+    })
   }
   render() {
     let style = require("./signup.css");
     return (
       <div className="main">
-      {
-       // this.beforeLogin()
-      }
         <div className="wrapper" style={style.wrapper}>
           <img className="logo" style={style.logo} src={logo} alt="Logo" />
           
           <form>
             <div className="row">
-            <div class="input-field col s8">
-            <input placeholder="Cedula" id="first_name" type="text" class="validate" data-length="10"/>
-            <label for="first_name">Cedula</label>
+            <div className="input-field col s8">
+            <input placeholder="Cedula" id="first_name" type="text" value={this.state.cc} onChange={this.handler} className="validate" data-length="10"/>
+            <label htmlFor="first_name">Cedula</label>
           </div>
-          <div class="input-field col s4">
-          <select class="browser-default">
-            <option value="1">C.C</option>
-            <option value="2">T.I</option>
+          <div className="input-field col s4">
+          <select className="browser-default" value={this.state.cctype} onChange={this.handlerC}>
+            <option value="cc">C.C</option>
+            <option value="ti">T.I</option>
           </select>
           </div>
           </div>
