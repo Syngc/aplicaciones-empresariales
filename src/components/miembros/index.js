@@ -1,5 +1,4 @@
 import React from "react";
-import { element } from "prop-types";
 class Miembros extends React.Component {
   render() {
     const {

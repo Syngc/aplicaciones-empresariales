@@ -4,7 +4,10 @@ import {withRouter} from 'react-router'
 import New from './new'
 import {cloud} from '../../firebase/cloud'
 import Loader from 'react-loader-spinner'
-
+import Alert from 'react-s-alert';
+ 
+import 'react-s-alert/dist/s-alert-default.css';
+import 'react-s-alert/dist/s-alert-css-effects/slide.css';
 const customStyles = {
   content : {
     top                   : '50%',
@@ -96,6 +99,11 @@ class Groups extends React.Component {
       let result = await cloud.enrollStudent(code) 
       if(result.status==='created'){
           this.closeModal()
+          Alert.info('Su solicitud fue enviada', {
+            position: 'bottom-right',
+            effect: 'slide',
+            timeout: 'none'
+          })
         } else {
           this.setState({
             err: true,
@@ -117,7 +125,12 @@ class Groups extends React.Component {
       } else {
         let result = await cloud.enrollTeacher(code)
         if(result.status==='created'){
-            this.closeModal()
+            this.closeModal()  
+            Alert.info('Su solicitud fue enviada', {
+              position: 'bottom-right',
+              effect: 'slide',
+              timeout: 'none'
+            })
         } else {
           this.setState({
             err: true,
@@ -133,6 +146,7 @@ class Groups extends React.Component {
   render() {
     return (
       <div>
+      <Alert stack={{limit: 3}} /> 
          <Modal
           isOpen={this.state.modalIsOpen}
           onAfterOpen={this.afterOpenModal}

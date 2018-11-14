@@ -6,7 +6,9 @@ class Informacion extends React.Component {
   render() {
     const {
       classInfo,
-      type
+      type,
+      id,
+      deleteClass
     } = this.props
     return (
     <div className="row">
@@ -17,8 +19,8 @@ class Informacion extends React.Component {
           <span className="title-font">CODIGO : {classInfo.code}</span>
           <br></br>
           {
-            type === 2 && (
-              <a className="waves-effect waves-light btn right">Eliminar</a>
+            type === 2 && id === classInfo.teacher && (
+              <a className="waves-effect waves-light btn right" onClick={(e)=>{deleteClass(classInfo.id)}}>Eliminar</a>
             )
           }
         </div>

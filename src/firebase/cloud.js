@@ -156,7 +156,8 @@ let cloud = {
             name: name,
             code: code,
             teacher: fire.firebase_.auth().currentUser.uid,
-            teachers: teachers
+            teachers: teachers,
+            deleted: 0
           }).then(() => {
             // Return the created status
             resolve({'status': 'created'})
@@ -212,15 +213,21 @@ let cloud = {
       var firestore = fire.firebase_.firestore();
       const settings = {timestampsInSnapshots: true};
       firestore.settings(settings);
-      firestore.collection("deliverables").doc().set({
-        taskId: taskId,
-        link: link,
-        userId: fire.firebase_.auth().currentUser.uid,
-        score: 0
-      }).then(() => {
-        resolve({'status': 'created'})
-      }).catch((err)=>{
-        resolve({'status': 'error', 'error': err})
+      firestore.collection("deliverables").where('taskId', '==', taskId).where('userId', '==', fire.firebase_.auth().currentUser.uid).get().then((docs) => {
+        if(docs.docs.length===0){
+          firestore.collection("deliverables").doc().set({
+            taskId: taskId,
+            userId: fire.firebase_.auth().currentUser.uid,
+            link: link,
+            score: 0
+          }).then(() => {
+            resolve({'status': 'ok'})
+          }).catch((err)=>{
+            resolve({'status': 'error', 'error': err})
+          })
+        } else {
+          resolve({status: 'error', 'error': 'Ya has enviado una entrega'})
+        }
       })
     })
   },
@@ -235,7 +242,9 @@ let cloud = {
       fire.firebase_.auth().onAuthStateChanged(function(user) {
         if (user) {
           firestore.collection("users").doc(fire.firebase_.auth().currentUser.uid).get().then((doc) => {
-            resolve(doc.data())
+            let data = doc.data()
+            data.id = doc.id
+            resolve(data)
           }).catch((err)=>{
             resolve({'status': 'error', 'error': err})
           })
@@ -253,7 +262,7 @@ let cloud = {
       var firestore = fire.firebase_.firestore();
       const settings = {timestampsInSnapshots: true};
       firestore.settings(settings);
-      firestore.collection("classes").where('students.'+fire.firebase_.auth().currentUser.uid, '==', true).get().then((querySnapshot) => {
+      firestore.collection("classes").where('students.'+fire.firebase_.auth().currentUser.uid, '==', true).where('deleted', '==', 0).get().then((querySnapshot) => {
         // Return the array of students
         let result = querySnapshot.docs.map(function (documentSnapshot) {
           let data = documentSnapshot.data()
@@ -275,7 +284,7 @@ let cloud = {
       const settings = {timestampsInSnapshots: true};
       firestore.settings(settings);
       // Get classes where the teachers is in the teachers list
-      firestore.collection("classes").where('teachers.'+fire.firebase_.auth().currentUser.uid, '==', true).get().then((querySnapshot) => {
+      firestore.collection("classes").where('teachers.'+fire.firebase_.auth().currentUser.uid, '==', true).where('deleted', '==', 0).get().then((querySnapshot) => {
         let result = querySnapshot.docs.map(function (documentSnapshot) {
           let data = documentSnapshot.data()
           data.id = documentSnapshot.id
@@ -295,6 +304,7 @@ let cloud = {
       // Get classes where the teachers is in the teachers list
       firestore.collection("classes").doc(id).get().then((querySnapshot) => {
         let result = querySnapshot.data()
+        result.id = querySnapshot.id
         resolve(result)
       }).catch((err)=>{
         resolve({'status': 'error', 'error': err})
@@ -374,21 +384,37 @@ let cloud = {
    * @param {string} deliverableId 
    * @param {float} score - Score for the deliverable
    */
-  updateDeliverables(deliverableId, score){
+  updateDeliverables(taskId, score, userId){
     return new Promise(resolve => {
       var firestore = fire.firebase_.firestore();
       const settings = {timestampsInSnapshots: true};
       firestore.settings(settings);
       // Set deliverable score on firebase
-      firestore.collection("deliverables").doc(deliverableId).set({
-        score: score
-      }, { merge: true })
-      .then(function() {
-        resolve({'status': 'ok'})
+      firestore.collection("deliverables").where('taskId', '==', taskId).where('userId', '==', userId).get().then((docs) => {
+        if(docs.docs.length===0){
+          firestore.collection("deliverables").doc().set({
+            taskId: taskId,
+            userId: userId,
+            link: '',
+            score: parseFloat(score)
+          }).then(() => {
+            resolve({'status': 'ok'})
+          }).catch((err)=>{
+            resolve({'status': 'error', 'error': err})
+          })
+        } else {
+          firestore.collection("deliverables").doc(docs.docs[0].id).set({
+            score: parseFloat(score)
+          }, { merge: true })
+          .then(function() {
+            resolve({'status': 'ok'})
+          })
+          .catch(function(error) {
+            resolve({error: error})
+          })
+        }
       })
-      .catch(function(error) {
-        resolve({error: error})
-      })
+
     })
   },
   /**
@@ -409,6 +435,31 @@ let cloud = {
         resolve({error: error})
       })
     })
+  },
+  removeClass(classId){
+    return new Promise(resolve => {
+      var firestore = fire.firebase_.firestore();
+      const settings = {timestampsInSnapshots: true};
+      firestore.settings(settings);
+      // Update user info with the added info
+      firestore.collection("classes").doc(classId).get().then((doc)=>{
+        if(doc.data().teacher===fire.firebase_.auth().currentUser.uid){
+          firestore.collection("classes").doc(classId).set({
+            deleted: 1
+          }, { merge: true })
+          .then(function() {
+            resolve({'status': 'ok'})
+          }).catch(function(error){
+            resolve({error:error})
+          })
+        } else {
+          resolve({'status':'error','error':'Solo el creador puede eliminar la clase.'})
+        }
+      })
+      .catch(function(error) {
+        resolve({error: error})
+      })
+    }) 
   },
   /**
    * Enroll student in class

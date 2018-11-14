@@ -5,7 +5,10 @@ import Students from "../../components/students";
 import {Tabs, Tab} from "react-materialize";
 import {cloud} from '../../firebase/cloud'
 import {Button, Row, Input} from 'react-materialize'
-
+import Alert from 'react-s-alert';
+ 
+import 'react-s-alert/dist/s-alert-default.css';
+import 'react-s-alert/dist/s-alert-css-effects/slide.css';
 import Modal from 'react-modal'
 const customStyles = {
   content : {
@@ -57,6 +60,9 @@ class Deliveries extends React.Component {
       this.getStudents()
     })
     result = await cloud.validateClass(this.state.taskInfo.classId)
+    if(result.deleted===1){
+      window.location.href = '/home' 
+    }
     this.setState({
       classInfo: result
     })
@@ -83,9 +89,19 @@ class Deliveries extends React.Component {
       let result = await cloud.createDeliverable(this.state.id, this.state.repository)
       if(result.status==='created'){
         this.closeModal()
+      } else {
+        Alert.error(result.error, {
+          position: 'bottom-right',
+          effect: 'slide',
+          timeout: 'none'
+        })
       }
-    } else {
-      // ERROR react-alert
+    } else { 
+      Alert.error('Debe ingresar un repositorio', {
+        position: 'bottom-right',
+        effect: 'slide',
+        timeout: 'none'
+      })
     }
   }
   openModal = () => {
@@ -97,6 +113,7 @@ class Deliveries extends React.Component {
   render() { 
     return (    
       <div className="view">        
+      <Alert stack={{limit: 3}} /> 
         <Modal
             isOpen={this.state.modalIsOpen}
             onAfterOpen={this.afterOpenModal}
@@ -142,7 +159,7 @@ class Deliveries extends React.Component {
               </div> 
             </div>
           </Tab>
-          <Tab title="Entregas" ><Students  estudiantes={this.state.students} /></Tab>
+          <Tab title="Entregas" ><Students  estudiantes={this.state.students} type={this.state.usertype} id={this.state.id} refresh={this.getStudents}/></Tab>
         </Tabs>
       </main>
     </div>

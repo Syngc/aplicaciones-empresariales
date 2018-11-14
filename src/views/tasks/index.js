@@ -19,6 +19,7 @@ class Tasks extends React.Component {
     this.state={
       id: props.match.params.id,
       usertype: '',
+      uid:'',
       classInfo: {},
       tasks: [],
       students: [],
@@ -30,13 +31,17 @@ class Tasks extends React.Component {
   async componentDidMount(){
     let user = await cloud.getUser()
     this.setState({
-      usertype: user.type
+      usertype: user.type,
+      uid: user.id
     }, () => {
       this.validateClass()
     })
   }
   validateClass = async () => {
     let result = await cloud.validateClass(this.state.id)
+    if(result.deleted===1){
+      window.location.href = '/home' 
+    }
     this.setState({
       classInfo: result
     })
@@ -149,6 +154,18 @@ class Tasks extends React.Component {
       })
     }
   }  
+  deleteClass = async (id) => {
+    let result = await cloud.removeClass(id)
+    if(result.status==='ok'){
+      window.location.href = '/home'  
+    } else {
+      Alert.error(result.error, {
+        position: 'bottom-right',
+        effect: 'slide',
+        timeout: 'none'
+      })
+    }
+  }
   render() {
     return (
       <div className="view"> 
@@ -161,7 +178,7 @@ class Tasks extends React.Component {
           <Tabs className='tab-demo z-depth-1'>
             <Tab title="Entregas" active> <Delivery data={this.state.tasks} getTasks={this.getTasks} id={this.state.id} type={this.state.usertype}/></Tab>
             <Tab title="Miembros" ><Miembros type={this.state.usertype} students={this.state.students} teachers={this.state.teachers} deleteStudents={this.deleteStudent} deleteTeachers={this.deleteTeacher}/></Tab>
-            <Tab title="Información"><Informacion classInfo={this.state.classInfo} type={this.state.usertype}/></Tab>
+            <Tab title="Información"><Informacion classInfo={this.state.classInfo} type={this.state.usertype} id={this.state.uid} deleteClass={this.deleteClass}/></Tab>
             <Tab title={this.state.usertype === 2 ? 'Solicitudes' : ''} disabled={this.state.usertype !== 2}><Solicitudes students={this.state.pendingStudents} teachers={this.state.pendingTeachers} id={this.state.id} rejectStudent={this.rejectStudent} rejectTeacher={this.rejectTeacher} acceptStudent={this.acceptStudent} acceptTeacher={this.acceptTeacher}/> </Tab>
         </Tabs>
         </main>
