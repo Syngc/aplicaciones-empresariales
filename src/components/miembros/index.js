@@ -6,13 +6,16 @@ class Miembros extends React.Component {
       students,
       teachers,
       deleteStudents,
-      deleteTeachers
+      deleteTeachers,
+      type
     } = this.props
     let studentsList = students.map((element, index) => {
-      return  <li className="collection-item" key={index}><div>{element.cc}<div style={{cursor: 'pointer'}} className="secondary-content"><i className="material-icons" onClick={() => deleteStudents(element.id)}>close</i></div></div></li>
+      let deleted = type === 2 ? (<div style={{cursor: 'pointer'}} className="secondary-content"><i className="material-icons" onClick={() => deleteStudents(element.id)}>close</i></div>) : (null) 
+      return  <li className="collection-item" key={index}><div>{element.cc}{deleted}</div></li>
     })
     let teachersList = teachers.map((element, index) => {
-      return  <li className="collection-item" key={index}><div>{element.cc} - {element.email}<div style={{cursor: 'pointer'}} className="secondary-content"><i className="material-icons" onClick={() => deleteTeachers(element.id)}>close</i></div></div></li>
+      let deleted = type === 2 ? (<div style={{cursor: 'pointer'}} className="secondary-content"><i className="material-icons" onClick={() => deleteTeachers(element.id)}>close</i></div>) : (null)
+      return  <li className="collection-item" key={index}><div>{element.cc} - {element.email}{deleted}</div></li>
     })
     return (
       <div>

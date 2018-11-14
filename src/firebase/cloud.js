@@ -207,17 +207,16 @@ let cloud = {
    * @param {string} link - Repo's link
    * @param {string} userId - User id
    */
-  createDeliverable(taskId, document, docType, link, userId){
+  createDeliverable(taskId, link){
     return new Promise(resolve => {
       var firestore = fire.firebase_.firestore();
       const settings = {timestampsInSnapshots: true};
       firestore.settings(settings);
       firestore.collection("deliverables").doc().set({
         taskId: taskId,
-        document: document,
-        docType: docType,
         link: link,
-        userId: userId
+        userId: fire.firebase_.auth().currentUser.uid,
+        score: 0
       }).then(() => {
         resolve({'status': 'created'})
       }).catch((err)=>{
@@ -302,6 +301,20 @@ let cloud = {
       })
     })
   },
+  validateTask(id){
+    return new Promise(resolve => {
+      var firestore = fire.firebase_.firestore();
+      const settings = {timestampsInSnapshots: true};
+      firestore.settings(settings);
+      // Get classes where the teachers is in the teachers list
+      firestore.collection("tasks").doc(id).get().then((querySnapshot) => {
+        let result = querySnapshot.data()
+        resolve(result)
+      }).catch((err)=>{
+        resolve({'status': 'error', 'error': err})
+      })
+    })
+  },
   /**
    * Get tasks
    * @param {string} classId 
@@ -313,7 +326,9 @@ let cloud = {
       firestore.settings(settings);
       firestore.collection("tasks").where('classId', '==', classId).get().then((querySnapshot) => {
         let result = querySnapshot.docs.map(function (documentSnapshot) {
-          return documentSnapshot.data();
+          let data = documentSnapshot.data()
+          data.id = documentSnapshot.id
+          return data
         })
         resolve(result)
       }).catch((err)=>{
@@ -325,14 +340,28 @@ let cloud = {
    * Get deliverables
    * @param {string} taskId 
    */
-  getDeliverables(taskId){
+  getDeliverables(taskId, students){
     return new Promise(resolve => {
       var firestore = fire.firebase_.firestore();
       const settings = {timestampsInSnapshots: true};
       firestore.settings(settings);
       firestore.collection("deliverables").where('taskId', '==', taskId).get().then((querySnapshot) => {
-        let result = querySnapshot.docs.map(function (documentSnapshot) {
-          return documentSnapshot.data();
+        let result = students.map(function(student){
+          for(let i = 0; i < querySnapshot.docs.length; i++){
+            if(student.id===querySnapshot.docs[i].data().userId){
+              let data = querySnapshot.docs[i].data()
+              data.id = querySnapshot.docs[i].id
+              student.delivery = data
+              return student
+            }
+          } 
+          let data = {
+            score: 0,
+            link: '',
+            uid: student.id
+          }
+          student.delivery = data
+          return student
         })
         resolve(result)
       }).catch((err)=>{

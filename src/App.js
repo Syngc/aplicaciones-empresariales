@@ -63,7 +63,7 @@ class App extends Component {
             <Route path="/signup" render={() => <Signup cloud={cloud} setLogin={this.setLogin} user={this.state.user}></Signup>} />
             <Route path="/home" render={() => <Dashboard cloud={cloud} beforeLogin={this.beforeLogin} logout={this.logout} user={this.state.user}></Dashboard>}/>
             <Route path="/tasks/:id" render={() => <Tasks cloud={cloud} beforeLogin={this.beforeLogin} user={this.state.user}></Tasks>} />
-            <Route path="/deliveries" render={() => <Deliveries cloud={cloud} beforeLogin={this.beforeLogin} user={this.state.user}></Deliveries>} />
+            <Route path="/deliveries/:id" render={() => <Deliveries cloud={cloud} beforeLogin={this.beforeLogin} user={this.state.user}></Deliveries>} />
             <Redirect from="/" to='/home' />
         </Switch>
       </div>

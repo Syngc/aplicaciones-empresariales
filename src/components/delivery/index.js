@@ -1,7 +1,7 @@
 
 //Dependencies
 import React from 'react';
-import { Link } from 'react-router-dom'
+import {withRouter} from 'react-router-dom'
 import {Button, Modal, Row, Input} from 'react-materialize'
 
 import {cloud} from '../../firebase/cloud'
@@ -35,34 +35,42 @@ class Delivery extends React.Component {
       this.props.getTasks()
     }
   }
+  toDelivery = async (id) => {
+    this.props.history.push('/deliveries/'+id)
+  }
   render() {
     const {
-      data
+      data,
+      type
     } = this.props
     return (
       <div className="collection">
         {data.map((tarea, index) => 
-          <Link className="collection-item" key={index} to="/deliveries">{tarea.name}</Link>
+          <div className="collection-item" style={{cursor: 'pointer'}} onClick={() => {this.toDelivery(tarea.id)}} key={index}>{tarea.name}</div>
         )}
-        <Modal
-          header='Agregar entrega' 
-          actions={
-            <div>
-              <Button flat modal="close" waves="light" onClick={this.closeModal} >Close</Button>
-              <Button flat modal="close" waves="light" onClick={this.saveTask} >Accept</Button>
-            </div>
-          }
-          trigger={<a className="collection-item grey-text text-lighten-1">Agregar Entrega</a>}>
-          <Row>
-            <Input placeholder="Nombre" s={12} label="Nombre" id="nombre" name='nombre' value={this.state.nombre} onChange={this.handler}/>
-            <Input placeholder="Descripción" s={12} label="Descripción" id="descripcion" name='descripcion' value={this.state.descripcion} onChange={this.handler}/>
-            <label htmlFor="fecha">Fecha de entrega</label>
-            <input s={6} label='fecha de entrega' type="date" placeholder="fecha" name='fecha' id="fecha" value={this.state.fecha} onChange={this.handler}/>  
-          </Row>
-        </Modal>
+        {
+          type === 2 && (
+            <Modal
+              header='Agregar entrega' 
+              actions={
+                <div>
+                  <Button flat modal="close" waves="light" onClick={this.closeModal} >Close</Button>
+                  <Button flat modal="close" waves="light" onClick={this.saveTask} >Accept</Button>
+                </div>
+              }
+              trigger={<a className="collection-item grey-text text-lighten-1">Agregar Entrega</a>}>
+              <Row>
+                <Input placeholder="Nombre" s={12} label="Nombre" id="nombre" name='nombre' value={this.state.nombre} onChange={this.handler}/>
+                <Input placeholder="Descripción" s={12} label="Descripción" id="descripcion" name='descripcion' value={this.state.descripcion} onChange={this.handler}/>
+                <label htmlFor="fecha">Fecha de entrega</label>
+                <input s={6} label='fecha de entrega' type="date" placeholder="fecha" name='fecha' id="fecha" value={this.state.fecha} onChange={this.handler}/>  
+              </Row>
+            </Modal>
+          )
+        }
       </div>
     );
   }
 }
 
-export default Delivery;
+export default withRouter (Delivery);

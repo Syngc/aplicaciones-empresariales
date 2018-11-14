@@ -16,13 +16,13 @@ class Students extends React.Component {
             </tr>
           </thead>
           <tbody>
-            {estudiantes.map(estudiante => (
-              <tr>
-                <th scope="row">{estudiante.document}</th>
+            {estudiantes.map((estudiante, index) => (
+              <tr key = {index}>
+                <th scope="row">{estudiante.cc}</th>
                 <td>
-                  <a href={"http://" + estudiante.link}> {estudiante.link} </a>
+                  <a href={"http://" + estudiante.delivery.link}> {estudiante.delivery.link} </a>
                 </td>
-                <td>{estudiante.score}</td>
+                <td>{estudiante.delivery.score}</td>
               </tr>
             ))}
           </tbody>

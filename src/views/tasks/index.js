@@ -159,9 +159,9 @@ class Tasks extends React.Component {
         <main>
           <h1 className="float-left title-font"> </h1>
           <Tabs className='tab-demo z-depth-1'>
-            <Tab title="Entregas" active> <Delivery data={this.state.tasks} getTasks={this.getTasks} id={this.state.id}/></Tab>
-            <Tab title="Miembros" ><Miembros students={this.state.students} teachers={this.state.teachers} deleteStudents={this.deleteStudent} deleteTeachers={this.deleteTeacher}/></Tab>
-            <Tab title="Información"><Informacion classInfo={this.state.classInfo}/></Tab>
+            <Tab title="Entregas" active> <Delivery data={this.state.tasks} getTasks={this.getTasks} id={this.state.id} type={this.state.usertype}/></Tab>
+            <Tab title="Miembros" ><Miembros type={this.state.usertype} students={this.state.students} teachers={this.state.teachers} deleteStudents={this.deleteStudent} deleteTeachers={this.deleteTeacher}/></Tab>
+            <Tab title="Información"><Informacion classInfo={this.state.classInfo} type={this.state.usertype}/></Tab>
             <Tab title={this.state.usertype === 2 ? 'Solicitudes' : ''} disabled={this.state.usertype !== 2}><Solicitudes students={this.state.pendingStudents} teachers={this.state.pendingTeachers} id={this.state.id} rejectStudent={this.rejectStudent} rejectTeacher={this.rejectTeacher} acceptStudent={this.acceptStudent} acceptTeacher={this.acceptTeacher}/> </Tab>
         </Tabs>
         </main>

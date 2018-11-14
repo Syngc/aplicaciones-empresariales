@@ -1,16 +1,121 @@
 import React from "react";
 import Nav from "../../components/nav";
+import {withRouter} from 'react-router-dom'
 import Students from "../../components/students";
 import {Tabs, Tab} from "react-materialize";
+import {cloud} from '../../firebase/cloud'
+import {Button, Row, Input} from 'react-materialize'
 
-
-class Deliveries extends React.Component {
+import Modal from 'react-modal'
+const customStyles = {
+  content : {
+    top                   : '50%',
+    left                  : '50%',
+    right                 : 'auto',
+    bottom                : 'auto',
+    marginRight           : '-50%',
+    transform             : 'translate(-50%, -50%)'
+  }
+};
+class Deliveries extends React.Component {  
+  constructor (props){
+    super(props)
+    this.state={
+      id: props.match.params.id,
+      usertype: '',
+      taskInfo: {},
+      classInfo: {},
+      students: [],
+      repository: '',
+      modalIsOpen: false
+    } 
+  } 
+  async componentDidMount(){
+    let user = await cloud.getUser()
+    this.setState({
+      usertype: user.type
+    }, () => {
+      this.validateTask()
+    })
+  }  
+  handler = (e) => {
+    this.setState({
+      [e.target.name]: e.target.value
+    })
+  }
+  closeModal = () => {
+    this.setState({
+      repository: '',
+      modalIsOpen: false
+    })
+  }
+  validateTask = async () => {
+    let result = await cloud.validateTask(this.state.id)
+    this.setState({
+      taskInfo: result
+    }, () => {
+      this.getStudents()
+    })
+    result = await cloud.validateClass(this.state.taskInfo.classId)
+    this.setState({
+      classInfo: result
+    })
+    let user = localStorage.getItem('user')
+    let validation
+    if(this.state.usertype===2){
+      validation = result.teachers[JSON.parse(user).user.uid]
+    } else {
+      validation = result.students[JSON.parse(user).user.uid]
+    }
+    if(!validation){
+      window.location.href = '/home' 
+    } 
+  } 
+  getStudents = async () => {
+    let current = await cloud.getStudents(this.state.taskInfo.classId)
+    let deliverylist = await cloud.getDeliverables(this.state.id, current)
+    this.setState({
+      students: deliverylist
+    })
+  }
+  addDeliverable = async () => {
+    if(this.state.repository!==''){
+      let result = await cloud.createDeliverable(this.state.id, this.state.repository)
+      if(result.status==='created'){
+        this.closeModal()
+      }
+    } else {
+      // ERROR react-alert
+    }
+  }
+  openModal = () => {
+    this.setState({modalIsOpen: true});
+  } 
+  afterOpenModal = () => {
+    // references are now sync'd and can be accessed.
+  }
   render() { 
-    let data = require("../../data.json");
-    let tarea = data.tasks[1];
-    let estudiantes = data.deliverables;
     return (    
-      <div className="view">
+      <div className="view">        
+        <Modal
+            isOpen={this.state.modalIsOpen}
+            onAfterOpen={this.afterOpenModal}
+            onRequestClose={this.closeModal}
+            style={customStyles}
+            contentLabel="Example Modal"
+        >     
+        <Row>
+          <Input placeholder="Repository" s={12} label="Repository" id="repository" name='repository' value={this.state.repository} onChange={this.handler}/>
+          <div style={{width: '100%', textAlign: "right"}}>
+            <Button flat onClick={this.closeModal}>
+              Cancelar
+            </Button>  
+            <Button flat onClick={this.addDeliverable}>
+              Agregar
+            </Button>
+          </div>
+        </Row>
+      </Modal>
       <header> 
         <Nav logout={this.props.logout}></Nav>
       </header>
@@ -18,30 +123,26 @@ class Deliveries extends React.Component {
         <h1 className="float-left title-font"> </h1>
         <Tabs className='tab-demo z-depth-1'>
           <Tab title="Informacion" active> 
-          <div className="row">
-            <div className="col s12 m12">
+            <div className="row">
+              <div className="col s12 m12">
                 <div className="card-panel ">
-                <p className="row">NOMBRE: {tarea.name}</p> 
-  
-                <p className="row ">DESCRIPCIÓN:<br></br>  {tarea.description}</p>
-              <div class="form-group row">
-                <label for="example-date-input" class="col-2 col-form-label">
-                  Fecha de entrega :{" "}
-                </label>
-                <div class="col-10">
-                  <input
-                    class="form-control"
-                    type="date"
-                    value="2011-08-19"
-                    id="example-date-input"
-                  />
+                  <p className="row">NOMBRE: {this.state.taskInfo.name}</p> 
+                  <p className="row ">DESCRIPCIÓN:<br></br>{this.state.taskInfo.description}</p>
+                  <div className="form-group row">
+                    <label htmlFor="example-date-input" className="col-2 col-form-label">
+                      Fecha de entrega :{this.state.taskInfo.date}
+                    </label>
+                  </div>
+                  {
+                    this.state.usertype === 1 && (  
+                      <Button  onClick={this.openModal}>Agregar entrega</Button>
+                    )
+                  }
                 </div>
-              </div>
+              </div> 
             </div>
-          </div> 
-          </div>
           </Tab>
-          <Tab title="Entregas" ><Students  estudiantes={estudiantes} /></Tab>
+          <Tab title="Entregas" ><Students  estudiantes={this.state.students} /></Tab>
         </Tabs>
       </main>
     </div>
@@ -49,4 +150,4 @@ class Deliveries extends React.Component {
   }
 }
 
-export default Deliveries;
+export default withRouter (Deliveries);
