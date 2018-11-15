@@ -29,16 +29,9 @@ class Nav extends React.Component {
             />
           </a>
 
-          <ul id="nav-mobile" className="right hide-on-med-and-down">
-            <li>
-              <div
-                className="navbar-brand abs-right-x"
-                onClick={this.props.logout}
-              >
-                <i className="material-icons">power_settings_new</i>
-              </div>
-            </li>
-          </ul>
+          <div className="navbar-brand right" onClick={this.props.logout}>
+            <i className="material-icons">power_settings_new</i>
+          </div>
         </div>
       </nav>
     );
