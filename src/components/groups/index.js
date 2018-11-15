@@ -171,14 +171,9 @@ class Groups extends React.Component {
               <div className="row">
                 {this.state.loader ? (
                   <div className="col s2 m2">
-                    <div className="card light-green accent-2">
-                      <div className="card-content  blue-grey-text text-darken-3">
-                        <Loader
-                          type="Circles"
-                          color="#4caf50"
-                          height={80}
-                          width={80}
-                        />
+                    <div className="card celerian">
+                      <div className="card-content">
+                        <Loader type="Circles" color="#ffffff" />
                       </div>
                     </div>
                   </div>

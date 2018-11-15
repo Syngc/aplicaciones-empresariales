@@ -104,10 +104,11 @@ class Students extends React.Component {
           <div className="card-panel ">
             <table className="table table-hover">
               <thead>
-                <tr className="title-font celerian-text">
+                <tr className="title-font celerian">
                   <th scope="col">Estudiante</th>
                   <th scope="col">Repositorio</th>
                   <th scope="col">Nota</th>
+                  <th scope="col"> </th>
                 </tr>
               </thead>
               <tbody>
@@ -120,11 +121,14 @@ class Students extends React.Component {
                         {estudiante.delivery.link}{" "}
                       </a>
                     </td>
+                    <td>{estudiante.delivery.score}</td>
                     <td>
-                      {estudiante.delivery.score}
-                      <div style={{ width: "40%", textAlign: "right" }}>
+                      <div style={{ textAlign: "center" }}>
                         {type === 2 && (
-                          <Button onClick={() => this.openModal(estudiante.id)}>
+                          <Button
+                            className="celerian"
+                            onClick={() => this.openModal(estudiante.id)}
+                          >
                             Editar nota
                           </Button>
                         )}
