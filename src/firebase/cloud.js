@@ -221,7 +221,7 @@ let cloud = {
             link: link,
             score: 0
           }).then(() => {
-            resolve({'status': 'ok'})
+            resolve({'status': 'created'})
           }).catch((err)=>{
             resolve({'status': 'error', 'error': err})
           })

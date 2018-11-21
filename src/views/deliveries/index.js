@@ -4,8 +4,9 @@ import { withRouter } from "react-router-dom";
 import Students from "../../components/students";
 import { Tabs, Tab } from "react-materialize";
 import { cloud } from "../../firebase/cloud";
-import { Button, Row, Input } from "react-materialize";
+import { Button, Row } from "react-materialize";
 import Alert from "react-s-alert";
+import Select from "../../components/entregas/repositoryList"
 
 import "react-s-alert/dist/s-alert-default.css";
 import "react-s-alert/dist/s-alert-css-effects/slide.css";
@@ -29,8 +30,9 @@ class Deliveries extends React.Component {
       taskInfo: {},
       classInfo: {},
       students: [],
-      repository: "",
-      modalIsOpen: false
+      repository: '',
+      modalIsOpen: false,
+      repositories: []
     };
   }
   async componentDidMount() {
@@ -41,6 +43,9 @@ class Deliveries extends React.Component {
       },
       () => {
         this.validateTask();
+        if(user.type===1){
+          this.getRepositories()
+        }
       }
     );
   }
@@ -49,6 +54,21 @@ class Deliveries extends React.Component {
       [e.target.name]: e.target.value
     });
   };
+  handlerSelect = e => {
+    this.setState({
+      repository: e.value
+    })
+  }
+  getRepositories = () => {
+    let user = JSON.parse(localStorage.getItem('user'))
+    let repoUrl = user.additionalUserInfo.profile.repos_url
+    let that = this
+    fetch(repoUrl).then(res => res.json()).then((res)=>{
+      that.setState({
+        repositories: res
+      })
+    })
+  } 
   closeModal = () => {
     this.setState({
       repository: "",
@@ -97,7 +117,12 @@ class Deliveries extends React.Component {
         this.state.repository
       );
       if (result.status === "created") {
-        this.closeModal();
+        this.closeModal();    
+        Alert.info("Su entrega fue enviada", {
+          position: "bottom-right",
+          effect: "slide",
+          timeout: "none"
+        });
       } else {
         Alert.error(result.error, {
           position: "bottom-right",
@@ -131,15 +156,7 @@ class Deliveries extends React.Component {
           contentLabel="Example Modal"
         >
           <Row>
-            <Input
-              placeholder="Repository"
-              s={12}
-              label="Repository"
-              id="repository"
-              name="repository"
-              value={this.state.repository}
-              onChange={this.handler}
-            />
+            <Select repos={this.state.repositories} value={this.state.repositoy} handler={this.handlerSelect}/>
             <div style={{ width: "100%", textAlign: "right" }}>
               <Button flat onClick={this.closeModal}>
                 Cancelar
