@@ -171,7 +171,7 @@ class Groups extends React.Component {
               <div className="row">
                 {this.state.loader ? (
                   <div className="col s2 m2">
-                    <div className="card celerian">
+                    <div className="card celerian clic">
                       <div className="card-content">
                         <Loader type="Circles" color="#ffffff" />
                       </div>
@@ -181,7 +181,7 @@ class Groups extends React.Component {
                   this.state.classes.map((data, index) => (
                     <div className="col s2 m2" key={index}>
                       <div
-                        className="card celerian"
+                        className="card celerian clic"
                         onClick={() => this.taskPage(data.id)}
                       >
                         <div className="card-content white-text">
@@ -191,8 +191,8 @@ class Groups extends React.Component {
                     </div>
                   ))
                 )}
-                <div className="col s2 m2">
-                  <div className="card celerian" onClick={this.openModal}>
+                <div className="col s2 m2 ">
+                  <div className="card celerian clic" onClick={this.openModal}>
                     <div className="card-content white-text">
                       <span className="card-title">Nueva clase</span>
                     </div>

@@ -59,5 +59,13 @@ main {
   min-height: 28em;
 }
 
+.padding-right {
+  padding-right: 10px;
+  margin-right: 10px;
+}
+
+.clic {
+  cursor: pointer;
+}
 @import url("https://fonts.googleapis.com/css?family=Share+Tech+Mono");
 @import url("https://fonts.googleapis.com/css?family=Lato");

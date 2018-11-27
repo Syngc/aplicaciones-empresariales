@@ -11,12 +11,14 @@ class Nav extends React.Component {
         <div className="nav-wrapper celerian">
           <ul>
             <li>
-              <div
-                className="navbar-brand abs-left-x"
-                onClick={() => this.props.history.goBack()}
-              >
-                <i className="material-icons">navigate_before</i>
-              </div>
+              <a>
+                <div
+                  className="navbar-brand abs-left-x"
+                  onClick={() => this.props.history.goBack()}
+                >
+                  <i className="material-icons">navigate_before</i>
+                </div>
+              </a>
             </li>
           </ul>
           <a className="brand-logo center" href="!#">
@@ -29,9 +31,11 @@ class Nav extends React.Component {
             />
           </a>
 
-          <div className="navbar-brand right" onClick={this.props.logout}>
-            <i className="material-icons">power_settings_new</i>
-          </div>
+          <a href="!#" className="">
+            <div className="navbar-brand right " onClick={this.props.logout}>
+              <i className="material-icons padding-right">power_settings_new</i>
+            </div>
+          </a>
         </div>
       </nav>
     );
