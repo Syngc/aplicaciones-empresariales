@@ -26,7 +26,7 @@ class Login extends React.Component {
         <div className="wrapper">
           <img className="logo" src={logo} alt="Logo" />
           <button
-            className="btn_login title-font"
+            className="btn_login title-font clic"
             onClick={e => this.execute(e)}
           >
             LOGIN
