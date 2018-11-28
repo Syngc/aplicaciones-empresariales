@@ -116,7 +116,7 @@ class Students extends React.Component {
                   <tr key={index}>
                     <th scope="row">{estudiante.cc}</th>
                     <td>
-                      <a href={"http://" + estudiante.delivery.link}>
+                      <a href={estudiante.delivery.link}>
                         {" "}
                         {estudiante.delivery.link}{" "}
                       </a>
