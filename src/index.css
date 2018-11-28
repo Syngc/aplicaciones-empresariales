@@ -16,5 +16,73 @@ main {
   font-family: "Lato", sans-serif;
 }
 
+.celerian {
+  background-color: #aebd38;
+}
+
+.celerian-text {
+  color: #aebd38;
+}
+.comet {
+  background-color: #505160;
+}
+
+.comet-text {
+  color: #505160 !important;
+}
+
+.lynch {
+  background-color: #68829e;
+}
+
+.lynch-text {
+  color: #68829e;
+}
+
+.tabs .tab a {
+  color: #aebd38;
+}
+.tabs .tab a:hover,
+.tabs .tab a.active {
+  background-color: transparent;
+  color: #505160;
+}
+.tabs .tab.disabled a,
+.tabs .tab.disabled a:hover {
+  color: #aebd38;
+}
+.tabs .indicator {
+  background-color: #aebd38;
+}
+
+.card-panel {
+  min-height: 28em;
+}
+
+.padding-right {
+  padding-right: 10px;
+  margin-right: 10px;
+}
+
+.btn-modal{
+  margin: 10px;
+  color:white;
+  width: 150px;
+}
+
+.btn{
+  margin: 10px;
+  color:white;
+  width: 150px;
+  background-color: #aebd38;
+}
+
+.btn:hover{
+  background-color: #88961c
+}
+
+.clic {
+  cursor: pointer;
+}
 @import url("https://fonts.googleapis.com/css?family=Share+Tech+Mono");
 @import url("https://fonts.googleapis.com/css?family=Lato");

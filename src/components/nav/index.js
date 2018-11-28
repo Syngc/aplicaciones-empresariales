@@ -1,22 +1,45 @@
 //Dependencies
 import React from "react";
-
+import { withRouter } from "react-router";
 //Assets
 import Logo from "../../images/Logo_name_dark.png";
 
 class Nav extends React.Component {
   render() {
     return (
-        <nav className="navbar navbar-dark bg-dark justify-content-center">
-          <a className="navbar-brand abs-center-x" href="#">
-            <img src={Logo} width="90" height="30" alt="Workspace-logo" align="center"/>
+      <nav>
+        <div className="nav-wrapper celerian">
+          <ul>
+            <li>
+              <a>
+                <div
+                  className="navbar-brand abs-left-x"
+                  onClick={() => this.props.history.goBack()}
+                >
+                  <i className="material-icons">navigate_before</i>
+                </div>
+              </a>
+            </li>
+          </ul>
+          <a className="brand-logo center" href="!#">
+            <img
+              src={Logo}
+              width="90"
+              height="30"
+              alt="Workspace-logo"
+              align="center"
+            />
           </a>
-          <a className="navbar-brand abs-right-x" href="#" onClick={this.props.logout}>
-            Logout
+
+          <a href="!#" className="">
+            <div className="navbar-brand right " onClick={this.props.logout}>
+              <i className="material-icons padding-right">power_settings_new</i>
+            </div>
           </a>
-        </nav> 
+        </div>
+      </nav>
     );
   }
 }
 
-export default Nav;
+export default withRouter(Nav);
