@@ -157,11 +157,11 @@ class Deliveries extends React.Component {
         >
           <Row>
             <Select repos={this.state.repositories} value={this.state.repositoy} handler={this.handlerSelect}/>
-            <div style={{ width: "100%", textAlign: "right" }}>
-              <Button flat onClick={this.closeModal}>
+            <div style={{ width: "100%", textAlign: "right" }} >
+              <Button flat onClick={this.closeModal}className="celerian btn-modal">
                 Cancelar
               </Button>
-              <Button flat onClick={this.addDeliverable}>
+              <Button flat onClick={this.addDeliverable} className="celerian btn-modal">
                 Agregar
               </Button>
             </div>

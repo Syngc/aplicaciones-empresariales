@@ -19,6 +19,7 @@ const repositoryList = (props) => {
         options={options} 
         value={value}
         onChange={handler}
+        placeholder="Repositorios"
       />
     </React.Fragment>
   )

@@ -64,6 +64,23 @@ main {
   margin-right: 10px;
 }
 
+.btn-modal{
+  margin: 10px;
+  color:white;
+  width: 150px;
+}
+
+.btn{
+  margin: 10px;
+  color:white;
+  width: 150px;
+  background-color: #aebd38;
+}
+
+.btn:hover{
+  background-color: #88961c
+}
+
 .clic {
   cursor: pointer;
 }
